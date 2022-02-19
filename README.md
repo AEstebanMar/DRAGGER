@@ -3,7 +3,8 @@ Script de comparación de datos de GWAS, expresión génica (GTEx) y farmacológ
 
 Archivos necesarios para ejecutar el script:
 
-Los tres primeros archivos se obtienen mediante un corto procesamiento en AWK. Explicado en el archivo bashscript.txt
+Los tres primeros archivos se obtienen mediante un corto procesamiento en AWK. Explicado en el archivo bashscript.txt.
+Su tamaño supera el límite permitido para subir a github, así que no me es posible adjuntarlos.
 
 eQTL_Unidos.txt (Información de GTEx). Datos original descargados desde https://www.gtexportal.org/home/datasets (GTEx_Analysis_v8_eQTL.tar)
 
