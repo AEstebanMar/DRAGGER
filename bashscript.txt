@@ -1,0 +1,33 @@
+### Procesamiento de GWAS
+
+# Importante ir al directorio en que se encuentre el archivo .rs
+
+# Contar las líneas del archivo bruto de GWAS. 
+
+wc -l metaGWAS_repli16dbs_20190930.1tbl.rs
+
+# Resultado: 16358697 polimorfismos.
+
+# Head del archivo para ver su estructura.
+
+nawk -F, '{if(NR<11) { print }}' metaGWAS_repli16dbs_20190930.1tbl.rs > head_GWAS.txt
+
+# Imprimir el head en la consola de bash.
+
+awk ‘{ print }’ head_GWAS.txt.
+
+# Filtrado para tomar los polimorfismos con p-valor menor a 0.001.
+
+awk '{ if ($9 <= 0.001) { print } }' metaGWAS_repli16dbs_20190930.1tbl.rs > GWAS_0.001.txt
+
+# Recuento de RS tras el filtrado. Resultado: 41919 polimorfismos.
+
+wc -l GWAS_0.001.txt
+
+### Procesamiento de GTEx
+
+# Cambiar de directorio a la carpeta con los archivos de texto del GTEx.
+
+# Unión de todos los archivos terminados en .egenes.txt en uno solo, añadiendo además en cada uno una columna con el nombre del archivo original para no perder la información del tejido.
+
+awk -F, 'NR==1{print "file_name",$0;next}{print FILENAME , $0}' OFS=, *egenes.txt > eQTL_Unidos.txt
