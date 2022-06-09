@@ -1,4 +1,4 @@
-# AlzGWAS
+# GWAS analysis for drug repositioning in Alzheimer's Disease
 Script de comparación de datos de GWAS, expresión génica (GTEx) y farmacológica para el reposicionamiento de fármacos para tratar la enfermedad de Alzheimer. Elaborado para mi TFM en la Universidad de Málaga (Máster en Biología Molecular y Celular)
 
 Archivos necesarios para ejecutar el script:
