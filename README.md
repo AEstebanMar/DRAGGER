@@ -3,14 +3,14 @@ Script de análisis de datos de GWAS, expresión génica (GTEx) y farmacológica
 
 Archivos necesarios para ejecutar el script:
 
-Los tres primeros archivos se obtienen mediante un corto procesamiento en AWK. Explicado en el archivo preprocessing.sh.
-
 Archivos necesarios:
 
-Datos genómicos: metaGWAS_repli16dbs_20190930.1tbl.rs (Bellenguez *et al*, 2022). Extraer el archivo comprimido.
+Datos genómicos: metaGWAS_repli16dbs_20190930.1tbl.rs (Bellenguez *et al*, 2022).
 
-Datos de expresión génica: GTEx_Analysis_v8_eQTL.tar (https://www.gtexportal.org/home/datasets). Extraer archivos, se trabajará sobre los terminados en egenes.gz. (Información de GTEx).
+Datos de expresión génica: GTEx_Analysis_v8_eQTL.tar (https://www.gtexportal.org/home/datasets).
 
 Datos farmacológicos: interactions.tsv (datos de fármacos descargados de https://www.dgidb.org/downloads)
 
-Datos de Alzforum descargados desde: https://www.alzforum.org/therapeutics/search?fda_statuses=&target_types=&therapy_types=&conditions=&keywords-entry=&keywords=#results
+Datos de Alzforum descargados desde: https://www.alzforum.org/therapeutics/search?fda_statuses=&target_types=&therapy_types=&conditions=&keywords-entry=&keywords=#results. Descargar en formato texto.
+
+Para ejecutar el programa, crear una carpeta en la que guardar el script de AlzGWAS.R. En esa carpeta, crear una subcarpeta para los archivos metaGWAS_repli16dbs_20190930.1tbl.rs y GTEx_Analysis_v8_eQTL.tar. Guardar en ella el script preprocessing.sh y ejecutarlo. Una vez ejecutado, salir de la subcarpeta y ejecutar el script AlzGWAS.R.
