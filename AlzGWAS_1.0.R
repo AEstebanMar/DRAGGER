@@ -352,7 +352,5 @@
 
 	write.table(NewCandidates, row.names = FALSE, sep = "\t", "Resultados.tsv")
 
-	# En el archivo final hago retoques manuales para asegurar que todos los nombre están bien escritos y de forma homogénea, ya que no se han anotado de la forma que se usa para la comparación.
-	# Ahora usando la página de Venny se pueden extraer los fármacos que se deseen.
 	
 	
