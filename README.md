@@ -1,14 +1,14 @@
-# Análisis de GWAS para el reposicionamiento de fármacos en la Enfermedad de Alzheimer
-Script de análisis de datos de GWAS, expresión génica (GTEx) y farmacológica (DGIdb) para el reposicionamiento de fármacos para tratar la enfermedad de Alzheimer. Elaborado para mi TFM en la Universidad de Málaga (Máster en Biología Molecular y Celular).
+GNU/Linux 4.4.0 distribution Ubuntu 20.04.3 LTS
+R version 4.2.0
 
-Archivos necesarios para ejecutar el script:
+Required R packages: stringr, ggplot2
 
-Datos genómicos: metaGWAS_repli16dbs_20190930.1tbl.zip (Bellenguez *et al*, 2022).
+GTEx dataset available at https://www.gtexportal.org/home/datasets (version consulted in publication: GTEx_Analysis_v8_eQTL.tar)
 
-Datos de expresión génica: GTEx_Analysis_v8_eQTL.tar (https://www.gtexportal.org/home/datasets).
+GWAS dataset kindly provided by Dr [preguntar a JL], from Bellenguez et al, 2022.
 
-Datos farmacológicos: interactions.tsv (datos de fármacos descargados de https://www.dgidb.org/downloads)
+Drug interaction data available at https://www.dgidb.org/downloads
 
-Datos de Alzforum descargados desde: https://www.alzforum.org/therapeutics/search?fda_statuses=&target_types=&therapy_types=&conditions=&keywords-entry=&keywords=#results. Descargar en formato texto. Archivo incluido en este repositorio.
+Alzforum database: https://www.alzforum.org/therapeutics/search?fda_statuses=&target_types=&therapy_types=&conditions=&keywords-entry=&keywords=#results
 
-Para ejecutar el programa, crear una carpeta en la que guardar el script de AlzGWAS.R. En esa carpeta, crear una subcarpeta para los archivos metaGWAS_repli16dbs_20190930.1tbl.rs y GTEx_Analysis_v8_eQTL.tar. Guardar en ella el script preprocessing.sh y ejecutarlo. Una vez ejecutado, salir de la subcarpeta y ejecutar el script AlzGWAS.R.
+Network analysis performed in STRINGR. Processed in Cytoscape [poner versión cuando lo haga].
