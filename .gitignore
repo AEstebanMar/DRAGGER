@@ -1,10 +1,4 @@
-
-data/raw/*
-!data/raw/.gitkeep
-/data/processed/*
-!/data/processed/.gitkeep
-/output/tables*
-!/output/tables/.gitkeep
-/output/plots*
-!/output/plots/.gitkeep
-!/output/Summary.txt
+*.sublime*
+data**
+data**
+output**
