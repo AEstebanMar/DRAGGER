@@ -4,19 +4,22 @@
 
 Qcutoff = as.numeric(tail(commandArgs(),1))
 setwd('../data/raw')
-message('\n==============================================\nLoading input data (this might take a bit)')
+message('\n============================================================================================\nLoading input data')
+message('\nLoading Alzforum table')
 Alzforum = read.table ("Alzforum Therapeutics.txt", sep = "\t", header=TRUE, dec=".", fill = TRUE, quote = "")
+message('\nLoading DGIdb table')
 Interactions = read.csv("interactions.tsv", sep = "\t")
 setwd('../processed')
 # There are some duplicates in the significant RS table. This will be corrected later, as it will be easier
 # after some downscaling.
+message('\nLoading GWAS data')
 Sign = read.table("GWAS_filtered.txt", header=FALSE, sep="", dec=".")
 Rand = read.table("GWAS_random.txt", header=FALSE, sep="", dec=".")
+message('\nLoading GTEx data (this might take a bit)')
 GTEx = read.table ("Merged_eQTL.txt", header=TRUE, sep="", dec=".", fill = TRUE)
 TotalGenes = length(unique(GTEx$gene_name))
-save.image("Checking.RData")
 GWASheader = read.table ("head_GWAS.txt", header=FALSE, sep="", dec=".") [1,]	### Tal y como he escrito los códigos anteriores la tabla del GWAS se ha generado sin nombres de columnas. Esta línea lo corrige.
-message('Data loaded!')
+message('\nInput data loaded!')
 colnames(Sign) = colnames(Rand) = GWASheader
 saveRDS(Sign, file = "Sign.rds")
 saveRDS(Rand, file = "Rand.rds")
@@ -109,6 +112,8 @@ finalresult = cbind(Unoydos,result)
 
 SigMerged = finalresult[order(finalresult$Tissue),]
 
+saveRDS(SigMerged, file='SigMerged.rds')
+
 ### Repetimos para los aleatorios.
 
 # Creo dos vectores con los RS de cada grupo. Importante eliminar los NA, son RS que no están genotipados.
@@ -178,6 +183,13 @@ colnames(Unoydos) = c("Tissue","gene_id")
 finalresult = cbind(Unoydos,result)
 
 RandMerged = finalresult[order(finalresult$Tissue),]
+
+saveRDS(RandMerged, file = "RandMerged.rds")
+
+#eQTLs <- data.frame("eQTL"=c(unique(SigMerged$rs_id),unique(RandMerged$rs_id)), "non-eQTL"=unique())
+
+#eQTLs = data.frame("eQTL" = c(439, 107),"no eQTL" = c(41480, 41812))
+#rownames(eQTLs) = c("Significant SNPs", "Random SNPs")
 
 # Se genera un archivo de texto con la lista de dianas aleatorias. Esto servirá para construir la red en STRING.
 
@@ -328,6 +340,8 @@ Recommended [!Pharma$interaction_types %in% c("inhibitor","activator")] = "?"
 
 RecPharma = cbind (Pharma, Interaction, Recommended)
 
+DruggableTargets = length(unique(RecPharma$gene_name))
+
 Candidates = RecPharma[Recommended==TRUE,]
 
 TreatableTargets = length(unique(Candidates$gene_name))
@@ -375,7 +389,7 @@ NewCandidates = Candidates[Nuevo,]
 
 # Se genera el archivo de candidatos.
 
-write.table(NewCandidates, row.names = FALSE, sep = "\t", "Resultados.tsv")
+write.table(NewCandidates, row.names = FALSE, sep = "\t", "Results.tsv")
 
 message('Done!')
 
@@ -394,5 +408,7 @@ cat(TopQval[nrow(TopQval),"qval"], file="Summary.txt", append = TRUE)
 cat("\nTotal potential targets:\n", file="Summary.txt", append = TRUE)
 cat(PotentialTargets, file="Summary.txt", append = TRUE)
 cat("\nTotal druggable targets:\n", file="Summary.txt", append = TRUE)
+cat(DruggableTargets, file="Summary.txt", append = TRUE)
+cat("\nTotal treatable targets:\n", file="Summary.txt", append = TRUE)
 cat(TreatableTargets, file="Summary.txt", append = TRUE)
 

@@ -42,7 +42,7 @@ rm -r ../GTEx_Analysis_v8_eQTL
 cd ../../../Output/
 
 echo "Total polymorphisms from GWAS:" > Summary.txt
-echo $totalpols >> Summary.txt
+echo $totalpols >> Summary.txt ### Un unique a esto en R ha hecho ver que realmente son menos. Hay unas diez mil repeticiones.
 echo "Selected p-value:" >> Summary.txt
 echo $pval >> Summary.txt
 echo "Total filtered polymorphisms:" >> Summary.txt
