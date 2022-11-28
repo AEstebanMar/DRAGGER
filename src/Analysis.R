@@ -238,6 +238,8 @@ if (!any(DepMerge[,"gene_id"] %in% RandGenes))
 
 PotentialTargets = length(unique(DepMerge$gene_name))
 
+DepEQTL = length(unique(DepMerge$rs_id))
+
 write.table(DepMerge[,"gene_name"], col.names = FALSE, row.names = FALSE, sep = "\t", quote = FALSE, "Targets.txt")
 
 ### Análisis de fármacos. Nota: aquí también hago análisis aleatorio, pero realmente no debería ser aplicable. Los genes falsos positivos ya se han retirado,
@@ -405,6 +407,8 @@ cat("Filtered genes:\n", file="Summary.txt", append = TRUE)
 cat(TopGenes, file="Summary.txt", append = TRUE)
 cat("\nMax Q-value:\n", file="Summary.txt", append = TRUE)
 cat(TopQval[nrow(TopQval),"qval"], file="Summary.txt", append = TRUE)
+cat("\nFound eQTLs:\n", file="Summary.txt", append = TRUE)
+cat(DepEQTL, file="Summary.txt", append = TRUE)
 cat("\nTotal potential targets:\n", file="Summary.txt", append = TRUE)
 cat(PotentialTargets, file="Summary.txt", append = TRUE)
 cat("\nTotal druggable targets:\n", file="Summary.txt", append = TRUE)

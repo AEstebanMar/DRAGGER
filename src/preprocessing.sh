@@ -24,7 +24,7 @@ awk -v pval=$pval '{ if ($9 <= pval) {print} }' metaGWAS_repli16dbs_20190930.1tb
 
 # Recuento de RS tras el filtrado.
 
-filteredpols=$(wc -l < ../processed/GWAS_filtered.txt)
+filteredpols=$(wc -l < ../processed/GWAS_filtered.txt) # Comprobar si esto cuenta los únicos
 
 echo -e "\n" $filteredpols "polymorphisms passed filter\n"
 

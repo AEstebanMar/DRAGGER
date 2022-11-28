@@ -16,11 +16,9 @@ Qcutoff=5 ### The top percentaje Q-value that will be selected from the GTEx dat
 
 cd ./src
 
-./preprocessing.sh
+# ./preprocessing.sh
 Rscript ./Analysis.R $Qcutoff
 ./stats_plots.R
 
 echo -e "\n============================================================================================\nDAGGER has finished execution. See Output folder for results.\n============================================================================================\n"
-### POR HACER: NO VALE EL REPS PORQUE A PARTIR DE CIERTO P-VALOR DE GWAS APARECE UN RS QUE NO ESTÁ EN GTEX.
-### ESTUDIAR SI CON UN MERGE CONSEGUIMOS RESULTADOS EQUIVALENTES, Y SI NO, ELIMINAR EL RS A MANO (COMPARACIÓN
-### VECTORIAL DE LOS NOMBRES DE LOS RS QUE ELIMINE DE LA TABLA GWAS LOS QUE NO APAREZCAN EN AMBOS)
+

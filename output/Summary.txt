@@ -1,3 +1,9 @@
+Total polymorphisms from GWAS:
+16358697
+Selected p-value:
+0.001
+Total filtered polymorphisms:
+41919
 Total GTEx Genes:
 39680
 Q-value cutoff:
@@ -7,7 +13,7 @@ Filtered genes:
 Max Q-value:
 0.00186873
 Total potential targets:
-298
+299
 Total druggable targets:
 69
 Total treatable targets:
@@ -18,9 +24,37 @@ Statistics summary
 Chi squared results for eQTL
 ---------------------------------------------------------------
 Chi squared value:
-192.9256
+199.1339
 p-value:
-7.307434e-44
+3.227351e-45
 Magnitude of effect (Cramer-V):
-0.05177417
+0.05260207
+---------------------------------------------------------------
+Total GTEx Genes:
+39680
+Q-value cutoff:
+5 %
+Filtered genes:
+21057
+Max Q-value:
+0.00186873
+Found eQTLs:
+439
+Total potential targets:
+299
+Total druggable targets:
+69
+Total treatable targets:
+22
+==========================================
+Statistics summary
+==========================================
+Chi squared results for eQTL
+---------------------------------------------------------------
+Chi squared value:
+199.1339
+p-value:
+3.227351e-45
+Magnitude of effect (Cramer-V):
+0.05260207
 ---------------------------------------------------------------
