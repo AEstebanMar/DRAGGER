@@ -16,8 +16,8 @@ Qcutoff=5 ### The top percentaje Q-value that will be selected from the GTEx dat
 
 cd ./src
 
-./preprocessing.sh
-Rscript ./Analysis.R $Qcutoff
+#./preprocessing.sh
+#Rscript ./Analysis.R $Qcutoff
 ./stats_plots.R
 
 echo -e "\n============================================================================================\nDAGGER has finished execution. See Output folder for results.\n============================================================================================\n"

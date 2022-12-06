@@ -83,7 +83,7 @@ message('Performing eQTL chi-squared tests\n')
 setwd("../tables")
 eQTL <- tableForChisq(SignData$eQTL, RandData$eQTL, SignData$SNP,"eQTL","SNP")
 eQTLChisqres <- Chi2(eQTL)
-totalSNP <- read.table("../Summary.txt",fill=T)[2,1] # In future versions this will be taken from an RDS file.
+totalSNP <- read.table("../Summary.txt",fill=T)[6,1] # In future versions this will be taken from an RDS file.
 # In its current state, DAGGER cannot present results in RDS form, as it lacks a proper report module.
 totalSNP <- list(RS = totalSNP)
 matchedSNPTable <- tableForChisq(SignData$eQTL, RandData$eQTL, totalSNP,"Matched","SNP",TRUE)
