@@ -26,6 +26,10 @@ awk -v pval=$pval '{ if ($9 <= pval) {print} }' metaGWAS_repli16dbs_20190930.1tb
 
 filteredpols=$(wc -l < ../processed/GWAS_filtered.txt) # Comprobar si esto cuenta los únicos
 
+uniqpols=$(uniq -c ../processed/GWAS_filtered.txt | wc -l)
+
+duplicates=$((filteredpols-uniqpols))
+
 echo -e "\n" $filteredpols "polymorphisms passed filter\n"
 
 # Selección aleatoria de 41919 polimorfismos. Se usarán para buscar falsos positivos más adelante en el análisis.
@@ -47,6 +51,8 @@ echo "Selected p-value:" >> Summary.txt
 echo $pval >> Summary.txt
 echo "Total filtered polymorphisms:" >> Summary.txt
 echo $filteredpols >> Summary.txt
+echo "Duplicate polymorphisms:" >> Summary.txt
+echo $duplicates >> Summary.txt
 echo -e "\nPreprocessing done!\n\nStarting R script..."
 
 cd ../src/

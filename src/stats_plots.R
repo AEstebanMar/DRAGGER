@@ -14,15 +14,20 @@ VolcanoPlot <- function (x, y, ORcutoff=0.6, pvalcutoff=0.001, title){ # Code ad
 	invisible(dev.off())
 }
 
-tableEQTL <- function(sigset,randset,fullset) {
-	SigeQTL <- length(unique(sigset$rs_id))
-	RandeQTL <- length(unique(randset$rs_id))
-	totalSNP <- unique(fullset$RS)
-	totalSNP <- length(totalSNP[!is.na(totalSNP)])
-	df1 <- data.frame("eQTL"=c(SigeQTL,RandeQTL))
-	df2 <- data.frame("non_eQTL"=rep(totalSNP,2))
-	res = cbind(df1,df2)
-	rownames(res) = c("Significant SNPs", "Random SNPs")
+tableForChisq <- function(sigset,randset,fullset,testGroup,fullGroup,fixedFullSet=FALSE) {
+	sigData <- length(unique(sigset$RS))
+	randData <- length(unique(randset$RS))
+	if(!fixedFullSet){
+		totalData <- unique(fullset$RS)
+		totalData <- length(totalData[!is.na(totalData)])
+	}else{
+		totalData <- as.numeric(fullset)
+	}
+	df1 <- data.frame("first"=c(sigData,randData))
+	df2 <- data.frame("second"=rep(totalData,2))
+	res <- cbind(df1,df2)
+	colnames(res) <- c(testGroup,paste0("non_",testGroup))
+	rownames(res) <- c(paste("Significant",fullGroup), paste("Random",fullGroup))
 	return(res)
 }
 
@@ -74,21 +79,31 @@ message('Building Volcano plots\n')
 VolcanoPlot(x=SignData$SNP$beta, y=SignData$SNP$P, title="Significant_SNPs")
 VolcanoPlot(x=RandData$SNP$beta, y=RandData$SNP$P, title="Random_SNPs")
 # eQTL Chi squared analysis
-message('Performing eQTL chi-squared test\n')
-eQTL = tableEQTL(SignData$eQTL, RandData$eQTL, SignData$SNP)
-Chisqres = Chi2(eQTL)
+message('Performing eQTL chi-squared tests\n')
+setwd("../tables")
+eQTL <- tableForChisq(SignData$eQTL, RandData$eQTL, SignData$SNP,"eQTL","SNP")
+eQTLChisqres <- Chi2(eQTL)
+totalSNP <- read.table("../Summary.txt",fill=T)[2,1] # In future versions this will be taken from an RDS file.
+# In its current state, DAGGER cannot present results in RDS form, as it lacks a proper report module.
+totalSNP <- list(RS = totalSNP)
+matchedSNPTable <- tableForChisq(SignData$eQTL, RandData$eQTL, totalSNP,"Matched","SNP",TRUE)
+SNPChisqres <- Chi2(matchedSNPTable)
 
-setwd("../")
-cat("\n==========================================\nStatistics summary\n==========================================\n", file="Summary.txt", append = TRUE)
-cat("Chi squared results for eQTL\n---------------------------------------------------------------\n", file="Summary.txt", append = TRUE)
-cat("Chi squared value:\n", file="Summary.txt", append = TRUE)
-cat(Chisqres$X2, file="Summary.txt", append = TRUE)
-cat("\np-value:\n", file="Summary.txt", append = TRUE)
-cat(Chisqres$p.value, file="Summary.txt", append = TRUE)
-cat("\nMagnitude of effect (Cramer-V):\n", file="Summary.txt", append = TRUE)
-cat(Chisqres$Cramer_V, file="Summary.txt", append = TRUE)
-cat("\n---------------------------------------------------------------\n", file="Summary.txt", append = TRUE)
-setwd("./tables")
-write.table(eQTL, file="eQTL_table.txt", sep ="\t", row.names = TRUE, col.names = TRUE)
+setwd("../tables")
+write.table(matchedSNPTable, file="SNP_Chi2.txt", sep ="\t", row.names = TRUE, col.names = TRUE)
+cat("Chi squared value:\n", file="SNP_Chi2.txt", append = TRUE)
+cat(SNPChisqres$X2, file="SNP_Chi2.txt", append = TRUE)
+cat("\np-value:\n", file="SNP_Chi2.txt", append = TRUE)
+cat(SNPChisqres$p.value, file="SNP_Chi2.txt", append = TRUE)
+cat("\nMagnitude of effect (Cramer-V):\n", file="SNP_Chi2.txt", append = TRUE)
+cat(SNPChisqres$Cramer_V, file="SNP_Chi2.txt", append = TRUE)
+
+write.table(eQTL, file="eQTL_Chi2.txt", sep ="\t", row.names = TRUE, col.names = TRUE)
+cat("Chi squared value:\n", file="eQTL_Chi2.txt", append = TRUE)
+cat(eQTLChisqres$X2, file="eQTL_Chi2.txt", append = TRUE)
+cat("\np-value:\n", file="eQTL_Chi2.txt", append = TRUE)
+cat(eQTLChisqres$p.value, file="eQTL_Chi2.txt", append = TRUE)
+cat("\nMagnitude of effect (Cramer-V):\n", file="eQTL_Chi2.txt", append = TRUE)
+cat(eQTLChisqres$Cramer_V, file="eQTL_Chi2.txt", append = TRUE)
 
 message("Statistical analysis done!\n")

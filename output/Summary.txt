@@ -4,6 +4,8 @@ Selected p-value:
 0.001
 Total filtered polymorphisms:
 41919
+Duplicate polymorphisms:
+68
 Total GTEx Genes:
 39680
 Q-value cutoff:
@@ -12,8 +14,10 @@ Filtered genes:
 21057
 Max Q-value:
 0.00186873
+Found eQTLs:
+435
 Total potential targets:
-299
+295
 Total druggable targets:
 69
 Total treatable targets:
@@ -24,11 +28,11 @@ Statistics summary
 Chi squared results for eQTL
 ---------------------------------------------------------------
 Chi squared value:
-199.1339
+175.1731
 p-value:
-3.227351e-45
+5.487812e-40
 Magnitude of effect (Cramer-V):
-0.05260207
+0.04933053
 ---------------------------------------------------------------
 Total GTEx Genes:
 39680
@@ -39,9 +43,9 @@ Filtered genes:
 Max Q-value:
 0.00186873
 Found eQTLs:
-439
+435
 Total potential targets:
-299
+295
 Total druggable targets:
 69
 Total treatable targets:
@@ -52,9 +56,80 @@ Statistics summary
 Chi squared results for eQTL
 ---------------------------------------------------------------
 Chi squared value:
-199.1339
+175.1731
 p-value:
-3.227351e-45
+5.487812e-40
 Magnitude of effect (Cramer-V):
-0.05260207
+0.04933053
+---------------------------------------------------------------
+Total GTEx Genes:
+39680
+Q-value cutoff:
+5 %
+Filtered genes:
+21057
+Max Q-value:
+0.00186873
+Significant eQTLs:
+498
+Random eQTLs:
+158
+Final eQTLs:
+435
+Total potential targets:
+295
+Total druggable targets:
+69
+Total treatable targets:
+22
+==========================================
+Statistics summary
+==========================================
+Chi squared results for eQTL
+---------------------------------------------------------------
+Chi squared value:
+175.1731
+p-value:
+5.487812e-40
+Magnitude of effect (Cramer-V):
+0.04933053
+---------------------------------------------------------------
+
+==========================================
+Statistics summary
+==========================================
+Chi squared results for eQTL
+---------------------------------------------------------------
+Chi squared value:
+175.1731
+p-value:
+5.487812e-40
+Magnitude of effect (Cramer-V):
+0.04933053
+---------------------------------------------------------------
+
+==========================================
+Statistics summary
+==========================================
+Chi squared results for eQTL
+---------------------------------------------------------------
+Chi squared value:
+175.1731
+p-value:
+5.487812e-40
+Magnitude of effect (Cramer-V):
+0.04933053
+---------------------------------------------------------------
+
+==========================================
+Statistics summary
+==========================================
+Chi squared results for eQTL
+---------------------------------------------------------------
+Chi squared value:
+175.1731
+p-value:
+5.487812e-40
+Magnitude of effect (Cramer-V):
+0.04933053
 ---------------------------------------------------------------

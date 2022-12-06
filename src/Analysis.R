@@ -50,23 +50,23 @@ message('Done!')
 message('\nMatching GWAS and GTEx Data...')
 # Almaceno un vector con los RS del top 5 por ciento del GTEx.
 									
-RSTop = TopQval[,"rs_id"]
+RSTop <- TopQval[,"rs_id"]
 
-MatchGTEx = TopQval[RSTop %in% RSSign,]	
+MatchGTEx <- TopQval[RSTop %in% RSSign,]	
 
 # Almacena las filas de RSSign que se han encontrado.
 
-MatchGWAS = Sign[RSSign %in% RSTop,]		
+MatchGWAS <- Sign[RSSign %in% RSTop,]		
 
 # Eliminación de RS repetidos en tabla de GWAS.
 
-MatchGWAS = MatchGWAS[!duplicated(MatchGWAS$RS),]
+MatchGWAS <- MatchGWAS[!duplicated(MatchGWAS$RS),]
 
 # Ahora las ordeno en función del RS, es necesario que estén en el mismo orden porque se van a unir en función del RS.
 
-MatchGTEx = MatchGTEx[order(MatchGTEx$rs_id),]
+MatchGTEx <- MatchGTEx[order(MatchGTEx$rs_id),]
 
-MatchGWAS = MatchGWAS[order(MatchGWAS$RS),]
+MatchGWAS <- MatchGWAS[order(MatchGWAS$RS),]
 
 # Es posible que ambos marcos de datos generados tengan un número distinto de elementos, ya que hay RS que aparecen varias veces en el GTEx (están relacionados con más de un gen) mientras
 # que en el GWAS deberían aparecer una sola vez. Si es el caso, repetimos las filas necesarias hasta igualarlas en número. Para arreglarlo voy a anotar los RS de cada una, a ordenar
@@ -111,6 +111,8 @@ colnames(Unoydos) = c("Tissue","gene_id")
 finalresult = cbind(Unoydos,result)
 
 SigMerged = finalresult[order(finalresult$Tissue),]
+
+matchedSigPols <- length(SigMerged$RS)
 
 saveRDS(SigMerged, file='SigMerged.rds')
 
@@ -184,6 +186,8 @@ finalresult = cbind(Unoydos,result)
 
 RandMerged = finalresult[order(finalresult$Tissue),]
 
+matchedRandPols <- length(RandMerged$RS)
+
 saveRDS(RandMerged, file = "RandMerged.rds")
 
 #eQTLs <- data.frame("eQTL"=c(unique(SigMerged$rs_id),unique(RandMerged$rs_id)), "non-eQTL"=unique())
@@ -226,13 +230,15 @@ FPs = which (SigGenes %in% RandGenes)
 }
 # Se guarda el resultado en un archivo. El condicional se asegura de que ha salido bien, de ser así vale TRUE y el archivo se guarda.
 
-if (!any(DepMerge[,"gene_id"] %in% RandGenes))
+{
+	if (!any(DepMerge[,"gene_id"] %in% RandGenes))
 
 	{
 
 	message('Depuration complete!')
 
 	}
+}
 
 # Se genera un archivo de texto con la lista de dianas. Esto servirá para construir la red en STRING.
 
@@ -407,7 +413,11 @@ cat("Filtered genes:\n", file="Summary.txt", append = TRUE)
 cat(TopGenes, file="Summary.txt", append = TRUE)
 cat("\nMax Q-value:\n", file="Summary.txt", append = TRUE)
 cat(TopQval[nrow(TopQval),"qval"], file="Summary.txt", append = TRUE)
-cat("\nFound eQTLs:\n", file="Summary.txt", append = TRUE)
+cat("\nSignificant eQTLs:\n", file="Summary.txt", append = TRUE)
+cat(matchedSigPols, file="Summary.txt", append = TRUE)
+cat("\nRandom eQTLs:\n", file="Summary.txt", append = TRUE)
+cat(matchedRandPols, file="Summary.txt", append = TRUE)
+cat("\nFinal eQTLs:\n", file="Summary.txt", append = TRUE)
 cat(DepEQTL, file="Summary.txt", append = TRUE)
 cat("\nTotal potential targets:\n", file="Summary.txt", append = TRUE)
 cat(PotentialTargets, file="Summary.txt", append = TRUE)
