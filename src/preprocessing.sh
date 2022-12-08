@@ -51,8 +51,5 @@ echo "Selected p-value:" >> Summary.txt
 echo $pval >> Summary.txt
 echo "Total filtered polymorphisms:" >> Summary.txt
 echo $filteredpols >> Summary.txt
-echo "Duplicate polymorphisms:" >> Summary.txt
-echo $duplicates >> Summary.txt
-echo -e "\nPreprocessing done!\n\nStarting R script..."
 
 cd ../src/

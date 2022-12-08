@@ -2,27 +2,28 @@
 
 ### AlzGWAS: An R Tool for Drug Repurposing by Functional Annotation of GWAS in Alzheimer's Disease
 
-Qcutoff = as.numeric(tail(commandArgs(),1))
+Qcutoff <- as.numeric(tail(commandArgs(),1))
 setwd('../data/raw')
 message('\n============================================================================================\nLoading input data')
 message('\nLoading Alzforum table')
-Alzforum = read.table ("Alzforum Therapeutics.txt", sep = "\t", header=TRUE, dec=".", fill = TRUE, quote = "")
+Alzforum <- read.table ("Alzforum Therapeutics.txt", sep = "\t", header=TRUE, dec=".", fill = TRUE, quote = "")
 message('\nLoading DGIdb table')
-Interactions = read.csv("interactions.tsv", sep = "\t")
+Interactions <- read.csv("interactions.tsv", sep = "\t")
 setwd('../processed')
 # There are some duplicates in the significant RS table. This will be corrected later, as it will be easier
 # after some downscaling.
 message('\nLoading GWAS data')
-Sign = read.table("GWAS_filtered.txt", header=FALSE, sep="", dec=".")
-Rand = read.table("GWAS_random.txt", header=FALSE, sep="", dec=".")
+Sign <- read.table("GWAS_filtered.txt", header=FALSE, sep="", dec=".")
+Rand <- read.table("GWAS_random.txt", header=FALSE, sep="", dec=".")
 message('\nLoading GTEx data (this might take a bit)')
-GTEx = read.table ("Merged_eQTL.txt", header=TRUE, sep="", dec=".", fill = TRUE)
-TotalGenes = length(unique(GTEx$gene_name))
-GWASheader = read.table ("head_GWAS.txt", header=FALSE, sep="", dec=".") [1,]	### Tal y como he escrito los códigos anteriores la tabla del GWAS se ha generado sin nombres de columnas. Esta línea lo corrige.
+GTEx <- read.table ("Merged_eQTL.txt", header=TRUE, sep="", dec=".", fill = TRUE)
+TotalGenes <- length(unique(GTEx$gene_name))
+GWASheader <- read.table ("head_GWAS.txt", header=FALSE, sep="", dec=".") [1,]	### Tal y como he escrito los códigos anteriores la tabla del GWAS se ha generado sin nombres de columnas. Esta línea lo corrige.
 message('\nInput data loaded!')
 colnames(Sign) = colnames(Rand) = GWASheader
-saveRDS(Sign, file = "Sign.rds")
-saveRDS(Rand, file = "Rand.rds")
+duplicates <- length(Sign$RS) - length(unique(Sign$RS))
+saveRDS(Sign, file <- "Sign.rds")
+saveRDS(Rand, file <- "Rand.rds")
 
 ######################################### GWAS-GTEx merging ###############################################
 
@@ -404,7 +405,13 @@ message('Done!')
 message('\nAnalysis complete!\n')
 
 setwd('../')
-cat("Total GTEx Genes:\n", file="Summary.txt", append = TRUE)
+{
+	if (duplicates > 0) {
+		cat("\nGWAS duplicates found:\n", file="Summary.txt", append = TRUE)
+		cat(duplicates, file="Summary.txt", append = TRUE)
+	}
+}
+cat("\nTotal GTEx Genes:\n", file="Summary.txt", append = TRUE)
 cat(TotalGenes, file="Summary.txt", append = TRUE)
 cat("\nQ-value cutoff:\n", file="Summary.txt", append = TRUE)
 cat(Qcutoff, file="Summary.txt", append = TRUE)

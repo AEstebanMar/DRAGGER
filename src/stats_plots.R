@@ -14,17 +14,18 @@ VolcanoPlot <- function (x, y, ORcutoff=0.6, pvalcutoff=0.001, title){ # Code ad
 	invisible(dev.off())
 }
 
-tableForChisq <- function(sigset,randset,fullset,testGroup,fullGroup,fixedFullSet=FALSE) {
+tableForChisq <- function(sigset,randset,fullset,testGroup,fullGroup,fixedTotal=FALSE) {
 	sigData <- length(unique(sigset$RS))
 	randData <- length(unique(randset$RS))
-	if(!fixedFullSet){
-		totalData <- unique(fullset$RS)
-		totalData <- length(totalData[!is.na(totalData)])
-	}else{
+	if(!fixedTotal){
+		totalData <- length(fullset$RS) # Some NAs exist in this list, but should not be eliminated as
+								# they correspond to real, although currently unidentified, SNPs. 
+	} else {
 		totalData <- as.numeric(fullset)
 	}
 	df1 <- data.frame("first"=c(sigData,randData))
 	df2 <- data.frame("second"=rep(totalData,2))
+	df2 <- df2 - df1
 	res <- cbind(df1,df2)
 	colnames(res) <- c(testGroup,paste0("non_",testGroup))
 	rownames(res) <- c(paste("Significant",fullGroup), paste("Random",fullGroup))
@@ -40,19 +41,32 @@ Chi2 <- function (Data) {
 	return(result)
 }
 
+# This function builds a table and checks for missing categories. For example,
+# if any chromosomes are missing in the dataset, empty rows will be created
+# for them.
+
+tableGroups <- function(set, attr) { 
+	table <- table(set[,attr])
+	df <- data.frame(rep(0, tail(names(table), 1)))
+	for (n in 1:length(table)) {
+		df[names(table[n]),] <- table[n]
+	}
+	df <- cbind(seq(1:nrow(df)), df)
+	return(df)
+}
+
 groupSigVsRandBarplot <- function(set1, set2, attr, title) {
-	SigData <- table(set1[,attr])
-	SigData <- cbind(seq(1:length(SigData)),SigData,rep("Significant",length(SigData)))
-	RandData <- table(set2[,attr])
-	RandData <- cbind(seq(1:length(RandData)),RandData,rep("Random",length(RandData)))
+	SigData <- tableGroups(set=set1, attr=attr)
+	SigData <- cbind(SigData,rep("Significant",length(SigData)))
+	RandData <- tableGroups(set=set2, attr=attr)
+	RandData <- cbind(RandData,rep("Random",length(RandData)))
 	colnames(SigData) = colnames(RandData) <- c("Chr","Frequency","Group")
-	totalData <- rbind(SigData, RandData)
-	df1 <- data.frame(totalData)
-	df1$Frequency = as.numeric(df1$Frequency)
-	df1$Chr = as.numeric(df1$Chr)
+	df <- rbind(SigData, RandData)
+	df$Frequency = as.numeric(df$Frequency)
+	df$Chr = as.numeric(df$Chr)
 	svg(file = paste(title,".svg"))
-	plot <- ggplot(df1, aes(x=Chr, y=Frequency, fill=Group)) + 
-			scale_x_continuous(breaks = seq(1, 23, by = 1)) +
+	plot <- ggplot(df, aes(x=Chr, y=Frequency, fill=Group)) + 
+			scale_x_continuous(breaks = unique(df$Chr)) +
    			geom_bar(position="dodge", stat="identity") +
    			scale_fill_manual(values = c("#000000","#7da1c4")) +
    			ggtitle(title) + xlab("Chromosome") +
@@ -72,7 +86,7 @@ setwd('../../output/plots')
 
 #### Build data frames and plots
 
-message('Building bar plots\n')
+message('\nBuilding bar plots\n')
 groupSigVsRandBarplot(SignData$SNP, RandData$SNP, "CHR", "SNP distribution per chromosome")
 groupSigVsRandBarplot(SignData$eQTL, RandData$eQTL, "CHR", "eQTL distribution per chromosome")
 message('Building Volcano plots\n')
@@ -83,20 +97,6 @@ message('Performing eQTL chi-squared tests\n')
 setwd("../tables")
 eQTL <- tableForChisq(SignData$eQTL, RandData$eQTL, SignData$SNP,"eQTL","SNP")
 eQTLChisqres <- Chi2(eQTL)
-totalSNP <- read.table("../Summary.txt",fill=T)[6,1] # In future versions this will be taken from an RDS file.
-# In its current state, DAGGER cannot present results in RDS form, as it lacks a proper report module.
-totalSNP <- list(RS = totalSNP)
-matchedSNPTable <- tableForChisq(SignData$eQTL, RandData$eQTL, totalSNP,"Matched","SNP",TRUE)
-SNPChisqres <- Chi2(matchedSNPTable)
-
-setwd("../tables")
-write.table(matchedSNPTable, file="SNP_Chi2.txt", sep ="\t", row.names = TRUE, col.names = TRUE)
-cat("Chi squared value:\n", file="SNP_Chi2.txt", append = TRUE)
-cat(SNPChisqres$X2, file="SNP_Chi2.txt", append = TRUE)
-cat("\np-value:\n", file="SNP_Chi2.txt", append = TRUE)
-cat(SNPChisqres$p.value, file="SNP_Chi2.txt", append = TRUE)
-cat("\nMagnitude of effect (Cramer-V):\n", file="SNP_Chi2.txt", append = TRUE)
-cat(SNPChisqres$Cramer_V, file="SNP_Chi2.txt", append = TRUE)
 
 write.table(eQTL, file="eQTL_Chi2.txt", sep ="\t", row.names = TRUE, col.names = TRUE)
 cat("Chi squared value:\n", file="eQTL_Chi2.txt", append = TRUE)
@@ -106,4 +106,6 @@ cat(eQTLChisqres$p.value, file="eQTL_Chi2.txt", append = TRUE)
 cat("\nMagnitude of effect (Cramer-V):\n", file="eQTL_Chi2.txt", append = TRUE)
 cat(eQTLChisqres$Cramer_V, file="eQTL_Chi2.txt", append = TRUE)
 
-message("Statistical analysis done!\n")
+message("Statistical analysis done!")
+
+save.image('Debugging.RData')
