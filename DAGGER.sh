@@ -16,7 +16,7 @@ Qcutoff=5 ### The top percentaje Q-value that will be selected from the GTEx dat
 
 cd ./src
 
-#./preprocessing.sh
+./preprocessing.sh
 Rscript ./Analysis.R $Qcutoff # Alzforum, recuento antes y después de filtrar.
 ./stats_plots.R
 

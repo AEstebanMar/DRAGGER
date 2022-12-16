@@ -6,3 +6,8 @@ Version 0.7
 
 -Added functions for SNP and eQTL analysis.
 
+Planned changes:
+
+-Revamp the whole program into an R package.
+
+-Add a demo.
