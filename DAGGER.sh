@@ -9,7 +9,7 @@
 
 ### Analysis parameters.
 
-echo -e "\nLaunching DAGGER 1.2\n============================================================================================"
+echo -e "\nLaunching DAGGER 0.7\n============================================================================================"
 
 export pval=0.001 ### The p-value cutoff for the GWAS data. Default is 0.001
 Qcutoff=5 ### The top percentaje Q-value that will be selected from the GTEx data. Default is 5.
@@ -17,7 +17,7 @@ Qcutoff=5 ### The top percentaje Q-value that will be selected from the GTEx dat
 cd ./src
 
 #./preprocessing.sh
-#Rscript ./Analysis.R $Qcutoff
+Rscript ./Analysis.R $Qcutoff # Alzforum, recuento antes y después de filtrar.
 ./stats_plots.R
 
 echo -e "\n============================================================================================\nDAGGER has finished execution. See Output folder for results.\n============================================================================================\n"
