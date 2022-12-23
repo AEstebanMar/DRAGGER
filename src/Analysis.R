@@ -33,29 +33,26 @@ RSSign = Sign [,"RS"]
 
 SortedGTEx = GTEx[order(GTEx$qval),]			
 
-# Se escoge el 5 % más significativo de los valores de GTEx. Considerar cambio a criterio simple de p-valor, no tan restrictivo.
+# Top 5 % GTEx selection
 
 TopQval = SortedGTEx[seq(nrow(SortedGTEx)*(Qcutoff/100)),]
-
-# Se ajusta el nombre de la columna de los RS, que por cómo se ha generado el archivo de GTEx no es adecuado.
 
 colnames(TopQval)[19] = "rs_id"
 TopGenes = length(unique(TopQval$gene_name))
 saveRDS(TopQval, "TopQval.rds")
 
-# Borro estos marcos de datos del área de trabajo, ya que no vuelven a hacer falta y ocupan mucho espacio en la RAM.
+# Cleanup
 
 rm(ls=GTEx,ls=SortedGTEx)
 
 message('Done!')
 message('\nMatching GWAS and GTEx Data...')
-# Almaceno un vector con los RS del top 5 por ciento del GTEx.
 									
 RSTop <- TopQval[,"rs_id"]
 
 MatchGTEx <- TopQval[RSTop %in% RSSign,]	
 
-# Almacena las filas de RSSign que se han encontrado.
+# Saving of RSSign rows with matches in RSTop.
 
 MatchGWAS <- Sign[RSSign %in% RSTop,]		
 
@@ -63,45 +60,37 @@ MatchGWAS <- Sign[RSSign %in% RSTop,]
 
 MatchGWAS <- MatchGWAS[!duplicated(MatchGWAS$RS),]
 
-# Ahora las ordeno en función del RS, es necesario que estén en el mismo orden porque se van a unir en función del RS.
+# Sorted by RS. Necessary for merging.
 
 MatchGTEx <- MatchGTEx[order(MatchGTEx$rs_id),]
 
 MatchGWAS <- MatchGWAS[order(MatchGWAS$RS),]
 
-# Es posible que ambos marcos de datos generados tengan un número distinto de elementos, ya que hay RS que aparecen varias veces en el GTEx (están relacionados con más de un gen) mientras
-# que en el GWAS deberían aparecer una sola vez. Si es el caso, repetimos las filas necesarias hasta igualarlas en número. Para arreglarlo voy a anotar los RS de cada una, a ordenar
-# los vectores resultantes y usar los datos de tabulación de los RS de GTEx para generar un vector que me diga cuántas veces hay que repetir cada fila del GWAS.
+# Correction due to SNPs appearing more than once in the GTEx dataset, as they can be linked to the expression of several genes.
 
-MatchRSGTEx = MatchGTEx[,"rs_id"]	### Anoto los RS que aparecen en los marcos de datos.
+MatchRSGTEx = MatchGTEx[,"rs_id"]
 
 MatchRSGWAS = MatchGWAS[,"RS"]
 
-MatchRSGTEx = sort(MatchRSGTEx)	### Las ordeno numéricamente por el RS
+MatchRSGTEx = sort(MatchRSGTEx)	# Sorting both with the same criterion to allow merging.
 
 MatchRSGWAS = sort(MatchRSGWAS)
 
-# Recuentos de cuántas veces aparece cada RS en la tabla GTEx. Necesario para unir ambas tablas.
 
 TablaGTEx = table(MatchRSGTEx)
 
-# Este resultado es un vector con cuántas veces se repite cada RS en la tabla de GTEx. Como en la tabla de GWAS cada RS aparece una sola vez, tiene tantas filas como
-# elementos tiene este vector. Por tanto, podemos utilizar el vector para indicar cuántas veces debe repetirse cada elemento de la tabla. Esta parte del código se basa
-# en la respuesta de Andrew a la pregunta planteada en https://stackoverflow.com/questions/29743691/duplicate-rows-in-a-data-frame-in-r
+# The result is a vector of the times an RS is repeated in the GTEx table. The GWAS RS are sorted in the same way, and they both
+# have the same list of RS. This allows to combine the repetitions with the GWAS SNPs to duplicate the necessary rows.
+# Approach based on Andrew's response to the following post:
+# https://stackoverflow.com/questions/29743691/duplicate-rows-in-a-data-frame-in-r
 
 reps = rep(1:nrow(MatchGWAS), TablaGTEx)
 
 MatchGWASajustado = MatchGWAS[reps,]
 
-# Se crea la matriz con las coincidencias, uniendo la información de ambos archivos.
-
 result = cbind(MatchGTEx, MatchGWASajustado)			
 
-# Ahora mismo la primera columna es algo fea, así que la retoco con ayuda del paquete "stringr"
-
 colnames(result)[1]="Tissue"
-
-# Considerar sustituir esto por  sub(" .v8.egenes.", "", test) o algo así para eliminar la necesidad del paquete stringr.
 
 Unoydos = stringr::str_split_fixed(result$Tissue, ".v8.egenes.txt,", 2)
 
@@ -117,63 +106,35 @@ matchedSigPols <- length(SigMerged$RS)
 
 saveRDS(SigMerged, file='SigMerged.rds')
 
-### Repetimos para los aleatorios.
-
-# Creo dos vectores con los RS de cada grupo. Importante eliminar los NA, son RS que no están genotipados.
+### Same process applied to the random RS.
 
 RSRand = Rand [,"RS"]				
 
 MatchGTEx = TopQval [RSTop %in% RSRand,]	
 
-# Almacena las filas de RSSign que se han encontrado.	
-
 MatchRand = Rand [RSRand %in% RSTop,]
 
-# Eliminación de RS repetidos en tabla de GWAS.
-
 MatchRand = MatchRand[!duplicated(MatchRand),]
-
-# Ahora las ordeno en función del RS, es necesario que estén en el mismo orden porque se van a unir en función del RS.
 
 MatchGTEx = MatchGTEx [order(MatchGTEx$rs_id),]		
 
 MatchRand = MatchRand [order(MatchRand$RS),]
 
-# Es posible que ambos marcos de datos generados tengan un número distinto de elementos, ya que hay RS que aparecen varias veces en el GTEx (están relacionados con más de un gen) mientras
-# que en el GWAS deberían aparecer una sola vez. Si es el caso, repetimos las filas necesarias hasta igualarlas en número. Para arreglarlo voy a anotar los RS de cada una, a ordenar
-# los vectores resultantes y usar los datos de tabulación de los RS de GTEx para generar un vector que me diga cuántas veces hay que repetir cada fila del GWAS.
-
-# Anoto los RS que aparecen en los marcos de datos.
-
 MatchRSGTEx = MatchGTEx[,"rs_id"]	
 
 MatchRSRand = MatchRand[,"RS"]
-
-# Las ordeno numéricamente por el RS
 
 MatchRSGTEx = sort(MatchRSGTEx)	
 
 MatchRSRand = sort(MatchRSRand)
 
-# Recuentos de cuántas veces aparece cada RS en la tabla GTEx. Necesario para unir ambas tablas.
-
 TablaGTEx = table(MatchRSGTEx)
-
-# Este resultado es un vector con cuántas veces se repite cada RS en la tabla de GTEx. Como en la tabla de GWAS cada RS aparece una sola vez, tiene tantas filas como
-
-# elementos tiene este vector. Por tanto, podemos utilizar el vector para indicar cuántas veces debe repetirse cada elemento de la tabla. Esta parte del código se basa
-
-# en la respuesta de Andrew a la pregunta planteada en https://stackoverflow.com/questions/29743691/duplicate-rows-in-a-data-frame-in-r
 
 reps = rep(1:nrow(MatchRand), TablaGTEx)
 
 MatchRandajustado = MatchRand[reps,]
 
-# Se crea la matriz con las coincidencias, uniendo la información de ambos archivos.
-
 result = cbind(MatchGTEx,MatchRandajustado)			
-
-# Ahora mismo la primera columna es algo fea, así que la retoco con ayuda del paquete "stringr"
 
 colnames(result)[1]="Tissue"
 
@@ -191,20 +152,13 @@ matchedRandPols <- length(RandMerged$RS)
 
 saveRDS(RandMerged, file = "RandMerged.rds")
 
-#eQTLs <- data.frame("eQTL"=c(unique(SigMerged$rs_id),unique(RandMerged$rs_id)), "non-eQTL"=unique())
-
-#eQTLs = data.frame("eQTL" = c(439, 107),"no eQTL" = c(41480, 41812))
-#rownames(eQTLs) = c("Significant SNPs", "Random SNPs")
-
-# Se genera un archivo de texto con la lista de dianas aleatorias. Esto servirá para construir la red en STRING.
+# A text file is generated for the random targets. Will be used for STRING network analysis.
 
 setwd('../../output/tables')
 
 write.table(RandMerged[,"gene_name"], col.names = FALSE, row.names = FALSE, sep = "\t", quote = FALSE, "RandomTargets.txt")
 
-### Depuración para eliminar los probables falsos positivos.
-
-# Se anotan las ID en Ensembl de los genes encontrados.
+### Removal of false positives.
 
 SigGenes = SigMerged[,"gene_id"]
 
@@ -213,11 +167,10 @@ RandGenes = RandMerged[,"gene_id"]
 message('Done!')
 message('\nRemoving false positives...')
 
-# Se anotan las posiciones en la tabla de significativos de los falsos positivos, que son los genes del archivo de resultados significativos que se encuentran también en el archivo de aleatorios.
+# Significant genes found in the random dataset are saved as FP (False Positives).
 
 FPs = which (SigGenes %in% RandGenes)
 
-# Se eliminan dichos genes de SigGenes, almacenando el resultado en una nueva variable.
 {
 	if(length(FPs)>0)
 	{
@@ -229,7 +182,7 @@ FPs = which (SigGenes %in% RandGenes)
 	}
 
 }
-# Se guarda el resultado en un archivo. El condicional se asegura de que ha salido bien, de ser así vale TRUE y el archivo se guarda.
+
 
 {
 	if (!any(DepMerge[,"gene_id"] %in% RandGenes))
@@ -241,7 +194,7 @@ FPs = which (SigGenes %in% RandGenes)
 	}
 }
 
-# Se genera un archivo de texto con la lista de dianas. Esto servirá para construir la red en STRING.
+# Final targets list saved in a text file for STRING network analysis.
 
 PotentialTargets = length(unique(DepMerge$gene_name))
 
@@ -249,65 +202,57 @@ DepEQTL = length(unique(DepMerge$rs_id))
 
 write.table(DepMerge[,"gene_name"], col.names = FALSE, row.names = FALSE, sep = "\t", quote = FALSE, "Targets.txt")
 
-### Análisis de fármacos. Nota: aquí también hago análisis aleatorio, pero realmente no debería ser aplicable. Los genes falsos positivos ya se han retirado,
-### así que aquí simplemente eliminaré los fármacos que TAMBIÉN tengan un efecto sobre un gen no implicado en la enfermedad. Esto sólo tiene sentido a nivel de
-### efectos secundarios, algo que no es cribable a este nivel.
+### Drug analysis. A random analysis is also performed, removing coincidences for the results. This reduces the likelihood
+### of the found drugs having side effects, an important step on the priorization. Future versions of DAGGER will include
+### an option to disable this step if a larger drugs list is desired.
 
 message('\nStarting drug interaction analysis...')
 
-# Se sustituyen las casillas vacías para evitar errores al construir el archivo final.
+# Empty fields are switched for "Missing" string.
 
-Interactions [Interactions==""] = "Missing"
+Interactions [Interactions==""] <- "Missing"
 
-# Anotación de filas que coinciden.
+# Store GWAS-GTEx rows for which a drug has been found.
 
-# Primero las filas del GWAS-GTEx para las que se ha encontrado fármaco en la base de datos.
+FoundGenes <- DepMerge$gene_name %in% Interactions$gene_name
 
-FoundGenes = DepMerge$gene_name %in% Interactions$gene_name
+Druggable <- DepMerge [FoundGenes,]
 
-Druggable = DepMerge [FoundGenes,]
+# Store DGIdb rows with mach in GWAS-GTEx table.
 
-# Después las filas con los fármacos encontrados. Se elimina la columna gene_name del marco de datos de fármacos, que ya está en el GWAS-GTEx.
+FoundDrugs <- Interactions$gene_name %in% DepMerge$gene_name
 
-FoundDrugs = Interactions$gene_name %in% DepMerge$gene_name
+Drugs <- Interactions [FoundDrugs,]
 
-Drugs = Interactions [FoundDrugs,]
+# Adjustments neccesary due to there being more drugs than genes.
 
-# Como hay varios fármacos por gen, hay más fármacos que genes. Para unir las dos matrices tengo que ajustarlo de la misma forma que ajusté la matriz del GWAS.
+Druggable <- Druggable[order(Druggable$gene_name),]
 
-# Primero las ordeno según el nombre del gen.
+Drugs <- Drugs[order(Drugs$gene_name),]
 
-Druggable = Druggable [order(Druggable$gene_name),]
+DruggableGenes <- Druggable [,"gene_name"]	
 
-Drugs = Drugs [order(Drugs$gene_name),]
+DrugGenes <- Drugs [,"gene_name"]
 
-# Anoto dichos nombres.
+# Due to the way the tables are merged, the gene name column used for merging will be deleted.
+# To prevent this information from being lost, the column is duplicated first.
 
-DruggableGenes = Druggable [,"gene_name"]	
+Drugs <- cbind(DrugGenes, Drugs)
 
-DrugGenes = Drugs [,"gene_name"]
 
-# Por la forma en que se unen las matrices, el nombre del gen aparecerá sólo una vez. Para comprobar más adelante que todo ha salido bien, añado otra columna con esta información
+Pharma <- merge(Druggable, Drugs, by.x="gene_name", by.y="gene_name")
 
-# que no se eliminará.
+# Final check:
 
-Drugs = cbind (DrugGenes, Drugs)
-
-# Se crea la matriz con las coincidencias, uniendo la información de ambos archivos.
-
-Pharma = merge (Druggable, Drugs, by.x = "gene_name", by.y = "gene_name")
-
-# Comprobación:
-
-if (all (Pharma$gene_name == Pharma$DrugGenes) )
+if(all(Pharma$gene_name==Pharma$DrugGenes))
 
 {
 
-	if (any (colnames (Pharma) == "DrugGenes"))
+	if(any(colnames(Pharma)=="DrugGenes"))
 
 		{
 
-		Pharma = Pharma [-which (colnames (Pharma) == "DrugGenes") ]
+		Pharma <- Pharma[-which(colnames(Pharma)=="DrugGenes")]
 
 		}
 
@@ -315,35 +260,30 @@ if (all (Pharma$gene_name == Pharma$DrugGenes) )
 
 }
 
-### Escoger fármacos con efecto deseado
+### Filtering for drugs with desired effect
 
 message('\nFiltering for desired interaction...')
 
-# Beta positiva o negativa. Almacenado de esta forma, TRUE significa protector y FALSE significa riesgo.
+Betas <- Pharma$beta < 0
 
-Betas = Pharma$beta < 0
 
-# Pendiente positiva o negativa. Almacenado de esta forma, TRUE significa aumento en la expresión y FALSE significa disminución.
+Slopes <- Pharma$slope > 0
 
-Slopes = Pharma$slope > 0
+Interaction <- Betas == Slopes
 
-# Se crea un vector para decidir si se necesita un inhibidor o un activador.
-
-Interaction = Betas == Slopes
-
-# Si un valor de Betas coincide con el de Slopes, significa que es un RS protector que activa expresión génica o un RS de riesgo que la disminuye. En cualquier caso, hará falta un activador.
+# If the "Betas" value matches the "Slopes" value, it means a protector SNP increasing expression
+# levels or a risk SNP decreasing them has been found. In both cases, an activator is desired.
 
 Interaction [Interaction == TRUE] = "activator"
 
-# Si un valor de Betas NO coincide con el de Slopes, significa que es un RS protector que inhibe expresión génica o un RS de riesgo que la aumenta. En cualquier caso, hará falta un inhibidor.
+# If they do NOT match, the inverse situations are true. Thus, an inhibitor is desired.
 
 Interaction [Interaction == FALSE] = "inhibitor"
 
-# Se crea el vector que decide si se recomienda o no el fármaco. Un valor de TRUE significa que se recomienda, los valores de FALSE se deben procesar un poco más.
-
 Recommended = Interaction == Pharma$interaction_types
 
-# Las posiciones que valen FALSE porque el fármaco detectado no es activador ni inhibidor (o falta información) se cambian por una interrogación.
+# Cases where the known interaction is not "activator" or "inhibitor", a question mark is introduced.
+# Deciding if said drugs are appropriate requires further analysis, currently not included in DAGGER.
 
 Recommended [!Pharma$interaction_types %in% c("inhibitor","activator")] = "?"
 
@@ -357,46 +297,37 @@ TreatableTargets = length(unique(Candidates$gene_name))
 
 message('Filtering complete!')
 
-### Comparo estos resultados con la tabla de Alzforum para saber cuáles se han probado y cuáles no.
+### Found drugs are compared with Alzforum Therapeutics Alzheimer Disease table to check for already tested drugs.
 	
 message('\nRemoving Alzforum matches...')
 
-# Ahora comparo con el archivo de candidatos. Probando con la metformina (350 en Candidates, aparece como 351 porque tiene header)
-# Para ello hay que asegurarse de que los nombres están escritos en el mismo formato, lo que se consigue con los siguientes comandos.
+# Unification of name formats. First word is selected, as we will consider entries such as "Metformin" and
+# "Metformin Hydroclorate" to be the same drug.
 
-# Los nombres de los candidatos no están exclusivamente con el fármaco, sino con la forma concreta (por ejemplo, no aparece "Metformin" sino "Metformin hydrochloride").
-# En este primer comando se elimina este problema dividiendo el nombre y quedándonos con la primera palabra. Además, se pasa todo a mayúsculas.
-	
-CandidatosNombre = toupper(stringr::str_split_fixed(Candidates$drug_claim_primary_name, " ", 2)[,1])
+CandidatesName = toupper(stringr::str_split_fixed(Candidates$drug_claim_primary_name, " ", 2)[,1])
 
-AlzforumNombre = toupper(stringr::str_split_fixed(Alzforum$Name, " ", 2)[,1])
+AlzforumName = toupper(stringr::str_split_fixed(Alzforum$Name, " ", 2)[,1])
 
-# A continuación se eliminan los caracteres especiales (como el símbolo de marca registrada) y los espacios, que por el método en el que se han descargado
-# los datos de Alzforum pueden aparecer. Para ello se sustituyen todos por apóstrofos (').
+# Elimination of special characters, which are problematic.
 
-CandidatosNombre = gsub ( "[^0-9A-Za-z///' ]" , "'" , CandidatosNombre)
+CandidatesName = gsub ( "[^0-9A-Za-z///' ]" , "'" , CandidatesName)
 
-AlzforumNombre = gsub ( "[^0-9A-Za-z///' ]" , "'" , AlzforumNombre)
+AlzforumName = gsub ( "[^0-9A-Za-z///' ]" , "'" , AlzforumName)
 
-# Y para finalizar se eliminan los apóstrofos.
+# Apostrophes are removed.
 
-CandidatosNombre = gsub ( "'" , "" , CandidatosNombre)
+CandidatesName = gsub ( "'" , "" , CandidatesName)
 
-AlzforumNombre = gsub ( "'" , "" , AlzforumNombre)
+AlzforumName = gsub ( "'" , "" , AlzforumName)
 
-# Nota importante: este método no es perfecto. Hay alguna excepción en la lista de candidatos que no se procesa bien de esta manera. Sin embargo, en este caso no es relevante.
-# Los errores son en fármacos cuyo nombre es del tipo "Compound 31" o "EGFR inhibitor", pero se trata de moléculas que todavía no están del todo
-# desarrolladas y por tanto no se han probado en nada. Por si acaso, he comprobado estos casos a mano, y no aparecen en la lista de Alzforum.
+# This approach has a limitation. Drugs with names such as "Compund 31" or "EGFR inhibitor" are not properly considered
+# in Candidates-Alzforum matching. However, such names are assigned to little-known drugs, which are yet to be tested
+# for any disease and therefore will not have a match. In any case, they are in very small number, making manual
+# confirmation very easy.
 
-# Ahora se hace la comparación. De la forma en la que se ha implementado, se creará un vector en el que aparecerá TRUE si el fármaco en cuestión no se ha probado y por tanto vale para nuestro ensayo.
+New = !CandidatesName%in%AlzforumName
 
-Nuevo = !CandidatosNombre%in%AlzforumNombre
-
-# Se añade este vector al archivo de candidatos.
-
-NewCandidates = Candidates[Nuevo,]
-
-# Se genera el archivo de candidatos.
+NewCandidates = Candidates[New,]
 
 write.table(NewCandidates, row.names = FALSE, sep = "\t", "Results.tsv")
 
