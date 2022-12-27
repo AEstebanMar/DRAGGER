@@ -18,10 +18,10 @@ Rand <- read.table("GWAS_random.txt", header=FALSE, sep="", dec=".")
 message('\nLoading GTEx data (this might take a bit)')
 GTEx <- read.table ("Merged_eQTL.txt", header=TRUE, sep="", dec=".", fill = TRUE)
 TotalGenes <- length(unique(GTEx$gene_name))
+TotalEQTL <- length(GTEx$rs_id)
 GWASheader <- read.table ("head_GWAS.txt", header=FALSE, sep="", dec=".") [1,]	### Tal y como he escrito los códigos anteriores la tabla del GWAS se ha generado sin nombres de columnas. Esta línea lo corrige.
 message('\nInput data loaded!')
-colnames(Sign) = colnames(Rand) = GWASheader
-duplicates <- length(Sign$RS) - length(unique(Sign$RS))
+colnames(Sign) = colnames(Rand) <- GWASheader
 saveRDS(Sign, file <- "Sign.rds")
 saveRDS(Rand, file <- "Rand.rds")
 
@@ -29,16 +29,17 @@ saveRDS(Rand, file <- "Rand.rds")
 
 message('\nApplying Q-value filter...')
 
-RSSign = Sign [,"RS"]					
+RSSign <- Sign [,"RS"]					
 
-SortedGTEx = GTEx[order(GTEx$qval),]			
+SortedGTEx <- GTEx[order(GTEx$qval),]			
 
 # Top 5 % GTEx selection
 
-TopQval = SortedGTEx[seq(nrow(SortedGTEx)*(Qcutoff/100)),]
+TopQval <- SortedGTEx[seq(nrow(SortedGTEx)*(Qcutoff/100)),]
 
 colnames(TopQval)[19] = "rs_id"
-TopGenes = length(unique(TopQval$gene_name))
+TopGenes <- length(unique(TopQval$gene_name))
+
 saveRDS(TopQval, "TopQval.rds")
 
 # Cleanup
@@ -49,6 +50,7 @@ message('Done!')
 message('\nMatching GWAS and GTEx Data...')
 									
 RSTop <- TopQval[,"rs_id"]
+TopEQTL <- length(RSTop)
 
 MatchGTEx <- TopQval[RSTop %in% RSSign,]	
 
@@ -336,19 +338,18 @@ message('Done!')
 message('\nAnalysis complete!\n')
 
 setwd('../')
-{
-	if (duplicates > 0) {
-		cat("\nGWAS duplicates found:\n", file="Summary.txt", append = TRUE)
-		cat(duplicates, file="Summary.txt", append = TRUE)
-	}
-}
+
 cat("\nTotal GTEx Genes:\n", file="Summary.txt", append = TRUE)
 cat(TotalGenes, file="Summary.txt", append = TRUE)
+cat("\nTotal GTEx eQTL:\n", file="Summary.txt", append = TRUE)
+cat(TotalEQTL, file="Summary.txt", append = TRUE)
 cat("\nQ-value cutoff:\n", file="Summary.txt", append = TRUE)
 cat(Qcutoff, file="Summary.txt", append = TRUE)
 cat(" %\n", file="Summary.txt", append = TRUE)
 cat("Filtered genes:\n", file="Summary.txt", append = TRUE)
 cat(TopGenes, file="Summary.txt", append = TRUE)
+cat("\nFiltered GTEx eQTL:\n", file="Summary.txt", append = TRUE)
+cat(TopEQTL, file="Summary.txt", append = TRUE)
 cat("\nMax Q-value:\n", file="Summary.txt", append = TRUE)
 cat(TopQval[nrow(TopQval),"qval"], file="Summary.txt", append = TRUE)
 cat("\nSignificant eQTLs:\n", file="Summary.txt", append = TRUE)

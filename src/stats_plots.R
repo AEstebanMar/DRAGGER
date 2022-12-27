@@ -9,7 +9,7 @@ VolcanoPlot <- function (x, y, ORcutoff=0.6, pvalcutoff=0.001, title){ # Code ad
 			geom_vline(xintercept=c(-ORcutoff, ORcutoff), col="red") +
 			geom_hline(yintercept=-log10(pvalcutoff), col="red") +
 			ggtitle(title) +
-			theme(plot.title = element_text(size=20, hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
+			theme(plot.title=element_text(size=20, hjust = 0.5), plot.subtitle=element_text(hjust = 0.5))
 	print(plot)
 	invisible(dev.off())
 }
@@ -33,11 +33,11 @@ tableForChisq <- function(sigset,randset,fullset,testGroup,fullGroup,fixedTotal=
 }
 
 Chi2 <- function (Data) {
-	Chisq = chisq.test(Data)
-	n = sum(Data)
-	gl = min(dim(Data) - 1)
-	VCramer = sqrt((Chisq$statistic)/(n * gl)) # Effect size code adapted from https://stats.stackexchange.com/questions/427864/how-to-calculate-an-effect-size-for-chi-square-in-r
-	result = data.frame("X2" = Chisq$statistic, "p-value" = Chisq$p.value, "Cramer_V" = VCramer, row.names = NULL)
+	Chisq <- chisq.test(Data)
+	n <- sum(Data)
+	gl <- min(dim(Data) - 1)
+	VCramer <- sqrt((Chisq$statistic)/(n * gl)) # Effect size code adapted from https://stats.stackexchange.com/questions/427864/how-to-calculate-an-effect-size-for-chi-square-in-r
+	result <- data.frame("X2" = Chisq$statistic, "p-value" = Chisq$p.value, "Cramer_V" = VCramer, row.names = NULL)
 	return(result)
 }
 
