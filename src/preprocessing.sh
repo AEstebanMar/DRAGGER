@@ -10,8 +10,7 @@ unzip metaGWAS_repli16dbs_20190930.1tbl.zip
 
 totalpols=$(wc -l < metaGWAS_repli16dbs_20190930.1tbl.rs)
 
-
-nawk -F, '{if(NR<11) {print}}' metaGWAS_repli16dbs_20190930.1tbl.rs > ../processed/head_GWAS.txt
+head -n 1 metaGWAS_repli16dbs_20190930.1tbl.rs > ../processed/header_GWAS.txt
 
 awk -v pval=$pval '{ if ($9 <= pval) {print} }' metaGWAS_repli16dbs_20190930.1tbl.rs > ../processed/GWAS_filtered.txt
 
@@ -34,7 +33,7 @@ TotalGTEx=$(wc -l ../../processed/Merged_eQTL.txt)
 
 rm -r ../GTEx_Analysis_v8_eQTL
 
-cd ../../../Output/
+cd ../../../output/
 
 echo "Total polymorphisms from GWAS:" > Summary.txt
 echo $totalpols >> Summary.txt
