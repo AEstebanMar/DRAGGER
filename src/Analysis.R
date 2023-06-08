@@ -19,7 +19,7 @@ message('\nLoading GTEx data (this might take a bit)')
 GTEx <- read.table ("Merged_eQTL.txt", header=TRUE, sep="", dec=".", fill = TRUE)
 TotalGenes <- length(unique(GTEx$gene_name))
 TotalEQTL <- length(GTEx$rs_id)
-GWASheader <- read.table ("head_GWAS.txt", header=FALSE, sep="", dec=".") [1,]	### Tal y como he escrito los códigos anteriores la tabla del GWAS se ha generado sin nombres de columnas. Esta línea lo corrige.
+GWASheader <- read.table("header_GWAS.txt", header=FALSE, sep="", dec=".")	### Tal y como he escrito los códigos anteriores la tabla del GWAS se ha generado sin nombres de columnas. Esta línea lo corrige.
 message('\nInput data loaded!')
 colnames(Sign) = colnames(Rand) <- GWASheader
 saveRDS(Sign, file <- "Sign.rds")
