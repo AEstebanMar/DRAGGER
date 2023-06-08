@@ -141,5 +141,3 @@ cat("\nMagnitude of effect (Cramer-V):\n", file="eQTL_Chi2.txt", append = TRUE)
 cat(eQTLChisqres$Cramer_V, file="eQTL_Chi2.txt", append = TRUE)
 
 message("Statistical analysis done!")
-
-save.image('Debugging.RData')
