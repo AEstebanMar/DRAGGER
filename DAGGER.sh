@@ -23,6 +23,6 @@ cd ./src
 ./preprocessing.sh
 ./Analysis.R $Qcutoff
 ./stats_plots.R
-
+./gprofileR.R
 echo -e "\n============================================================================================\nDAGGER has finished execution. See Output folder for results.\n============================================================================================\n"
 
