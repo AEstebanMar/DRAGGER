@@ -1,0 +1,15 @@
+Package: DAGGER
+Title: What the Package Does (One Line, Title Case)
+Version: 0.0.0.9000
+Authors@R: 
+    person("Alvaro", "Esteban-Martos", , "alvaroesteban@uma.com", role = c("aut", "cre"),
+           comment = c(ORCID = "ORCID: 0000-0001-9791-7779"))
+Description: Package for drug repositioning using GWAS and Gene Expression data.
+License: `use_gpl3_license()`
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

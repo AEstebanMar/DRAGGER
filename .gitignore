@@ -1,3 +1,7 @@
-data/**
-data/**
-output/**
+inst/doc
+.Rproj.user
+.Rhistory
+.Rdata
+.httr-oauth
+.DS_Store
+.quarto
