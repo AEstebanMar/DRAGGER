@@ -1,9 +1,74 @@
-#! /usr/bin/env Rscript
+
+
+### FUNCTIONS
+
+merge_by_rs <- function(GWAS_df,GTEx_df) {
+	rsGWAS <- GWAS_df$RS
+	rsGTEx <- GTEx_df$rs_id
+
+	MatchGTEx <- rsGTEx[rsGTEx %in% rsGWAS]
+	MatchGWAS <- rsGWAS[rsGWAS %in% rsGTEx]
+
+	# Now we remove duplicates (should not appear in GWAS, but sometimes do). Not done in previous step in case
+	# each duplicate RS has different values, in which case manual revision is required.
+
+	MatchGWAS <- MatchGWAS[!duplicated(MatchGWAS$RS),]
+
+	# Sort by RS
+
+	MatchGTEx <- MatchGTEx[order(MatchGTEx$rs_id),]
+	MatchGWAS <- MatchGWAS[order(MatchGWAS$RS),]
+
+	MatchGWAS <- .repGWAS(MatchGWAS, MatchGTEx)
+
+	return(MatchGWAS)
+
+}
+
+filterGTEx <- function(df, value = 0.05) {
+	sorted_df <- df[order(df$qval)]
+	filtered_df <- sorted_df[seq(nrow(sorted_df)*value), ]
+	colnames(filtered_df)[19] = "rs_id"
+	return(filtered_df)
+}
+
+### AUXILIARY FUNCTIONS (NOT EXPORTED)
+
+.loadTableFromText <- function(file, header) {
+	# This function assumes input is a text file. Might be unorthodox, subject to change
+	df <- read.table(file, header=header, sep="", dec=".")
+	return(df)
+}
+
+.repGWAS <- function(MatchGWAS, MatchGTEx) {
+
+	# RS appear in GTEx more than once, as they can be associated to changes in the expression of multiple genes.
+	# This function takes this into account, and copies each GWAS row accordingly in order to allow merging.
+
+	rsGTEx <- MatchGTEx[,"rs_id"]
+	rsGWAS <- MatchGWAS[,"RS"]
+	rsGTEx <- sort(rsGTEx)	# Sorting both with the same criterion to allow merging.
+	rsGWAS <- sort(rsGWAS)
+	GTExTable <- table(rsGTEx)
+
+	# The result is a vector of the times an RS is repeated in the GTEx table. The GWAS RS are sorted in the same way, and they both
+	# have the same list of RS. This allows to combine the repetitions with the GWAS SNPs to duplicate the necessary rows.
+	# Approach based on Andrew's response to the following post:
+	# https://stackoverflow.com/questions/29743691/duplicate-rows-in-a-data-frame-in-r
+
+	reps <- rep(1:nrow(MatchGWAS), TablaGTEx)
+	res <- MatchGWAS[reps, ]
+	return(res)
+
+}
 
 ### AlzGWAS: An R Tool for Drug Repurposing by Functional Annotation of GWAS in Alzheimer's Disease
 
 Qcutoff <- as.numeric(tail(commandArgs(),1))
 setwd('../data/raw')
+
+### Data loading and filtering
+
 message('\n============================================================================================\nLoading input data')
 message('\nLoading Alzforum table')
 Alzforum <- read.table ("Alzforum Therapeutics.txt", sep = "\t", header=TRUE, dec=".", fill = TRUE, quote = "")
@@ -48,6 +113,22 @@ rm(ls=GTEx,ls=SortedGTEx)
 
 message('Done!')
 message('\nMatching GWAS and GTEx Data...')
+
+### Por aquí estaba
+.extract_rs <- function(df) {
+	res <- c(df[grep("rs", colnames(df), ignore.case=TRUE)])
+	return(res)
+}
+
+.match_rs <- function(df1, df2) {
+	input <- list(df1, df2)
+	RS <- lapply(input, .extract_rs)
+
+	Match1 <- df1[RS[[1]] %in% RS[[2]]]
+	Match2 <- df2[RS[[2]] %in% RS[[1]]]
+
+	
+}
 									
 RSTop <- TopQval[,"rs_id"]
 TopEQTL <- length(RSTop)
@@ -68,27 +149,6 @@ MatchGTEx <- MatchGTEx[order(MatchGTEx$rs_id),]
 
 MatchGWAS <- MatchGWAS[order(MatchGWAS$RS),]
 
-# Correction due to SNPs appearing more than once in the GTEx dataset, as they can be linked to the expression of several genes.
-
-MatchRSGTEx = MatchGTEx[,"rs_id"]
-
-MatchRSGWAS = MatchGWAS[,"RS"]
-
-MatchRSGTEx = sort(MatchRSGTEx)	# Sorting both with the same criterion to allow merging.
-
-MatchRSGWAS = sort(MatchRSGWAS)
-
-
-TablaGTEx = table(MatchRSGTEx)
-
-# The result is a vector of the times an RS is repeated in the GTEx table. The GWAS RS are sorted in the same way, and they both
-# have the same list of RS. This allows to combine the repetitions with the GWAS SNPs to duplicate the necessary rows.
-# Approach based on Andrew's response to the following post:
-# https://stackoverflow.com/questions/29743691/duplicate-rows-in-a-data-frame-in-r
-
-reps = rep(1:nrow(MatchGWAS), TablaGTEx)
-
-MatchGWASajustado = MatchGWAS[reps,]
 
 result = cbind(MatchGTEx, MatchGWASajustado)			
 
