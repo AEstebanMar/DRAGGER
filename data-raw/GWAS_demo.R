@@ -9,5 +9,6 @@ associations$beta_number[dec_betas] <- associations$beta_number[dec_betas] * -1
 risk_alleles <- data.frame(GWAS_demo@risk_alleles)
 
 GWAS_demo <- merge(risk_alleles, associations, by = "association_id")[, c("variant_id", "pvalue", "beta_number")]
+colnames(GWAS_demo)[1] <- "rs_id"
 
 usethis::use_data(GWAS_demo, overwrite = TRUE)
