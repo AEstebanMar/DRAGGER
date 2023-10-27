@@ -23,13 +23,13 @@
 #' \describe{
 #'	\item{Tissue}{Tissue where gene expression is altered}
 #'	\item{gene_id}{Ensembl ID of affected gene}
-#'  \item{gene_name}{Official gene symbol}
+#'  \item{gene_name}{GENCODE gene name}
 #'	\item{variant_id}{Unique variant identifier. Contains chromosome, position,
 #'	ref and alt alleles and genome build}
 #'	\item{tss_distance}{Distance to gene transcription start site}
 #'	\item{rs_id_dbSNP151_GRCh38p7}{Reference SNP ID}
 #'	\item{slope}{Effect on gene expression}
-#'	\item{qval}{statistical significance of gene expression change}
+#'	\item{pval_nominal}{statistical significance of gene-variant association}
 #' }
 #' @source <https://www.gtexportal.org/home/downloads/adult-gtex#qtl>
 "GTEx"
