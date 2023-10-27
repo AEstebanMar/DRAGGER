@@ -9,14 +9,14 @@
 
 A data frame with 6 rows and 3 columns:
 \describe{
-\item{variant_id}{Reference SNP ID}
+\item{rs_id}{Reference SNP ID}
 \item{pvalue}{Statistical significance of SNP association to AD risk}
 \item{beta_number}{Beta coefficient of SNP association to AD. Positive}
 }
 }
 }
 \source{
-<Detailed in data-raw/GWAS_demo.R>
+\url{https://www.ebi.ac.uk/gwas/}
 }
 \usage{
 GWAS_demo
