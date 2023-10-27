@@ -2,12 +2,49 @@
 
 ### FUNCTIONS
 
-merge_by_rs <- function(GWAS_df,GTEx_df) {
-	rsGWAS <- GWAS_df$RS
-	rsGTEx <- GTEx_df$rs_id
+remove_duplicates <- function(df) {
+		rs_column <- grep("rs", colnames(df), ignore.case=TRUE)
+		variants <- df[, rs_column]
+		pval_column <- grep("pval|p-val|qval", colnames(df), ignore.case=TRUE)
+		dupes <- duplicated(variants) | duplicated(variants, fromLast=TRUE)
 
-	MatchGTEx <- rsGTEx[rsGTEx %in% rsGWAS]
-	MatchGWAS <- rsGWAS[rsGWAS %in% rsGTEx]
+		if(!any(dupes)) {
+			return(df)
+		}
+
+		if(length(pval_column) == 0) {
+			message("Duplicate SNPs found in dataset and missing statistical
+				significance. Choosing first occurrence of each duplicate")
+		} else {
+			message("Duplicate SNPs found in dataset. Choosing most statistically
+				significant occurrence of each duplicate")
+		}
+		
+		uniques <- df[!dupes, ]
+		dupes <- df[dupes, ]
+		unique_dupes <- unique(dupes[rs_column])
+		dupes_resolved <- data.frame(matrix(ncol=ncol(df),
+			nrow=nrow(unique_dupes)))
+		colnames(dupes_resolved) <- colnames(df)
+
+		for(i in 1:nrow(unique_dupes)) {
+			resolve <- dupes[dupes[, rs_column]==unique_dupes[i, ], ]
+			if(length(pval_column) != 0) {
+				resolve <- resolve[order(resolve[, pval_column]), ]
+				}
+			dupes_resolved[i, ] <- resolve[1, ]
+			}
+		res <- rbind(uniques, dupes_resolved)
+		return(res)
+	}
+
+merge_by_rs <- function(df1, df2) {
+
+	input <- list(df1, df2)
+	RS <- lapply(input, .extract_rs)
+
+	Match1 <- df1[RS[[1]] %in% RS[[2]]]
+	Match2 <- df2[RS[[2]] %in% RS[[1]]]
 
 	# Now we remove duplicates (should not appear in GWAS, but sometimes do). Not done in previous step in case
 	# each duplicate RS has different values, in which case manual revision is required.
@@ -28,7 +65,6 @@ merge_by_rs <- function(GWAS_df,GTEx_df) {
 filterGTEx <- function(df, value = 0.05) {
 	sorted_df <- df[order(df$qval)]
 	filtered_df <- sorted_df[seq(nrow(sorted_df)*value), ]
-	colnames(filtered_df)[19] = "rs_id"
 	return(filtered_df)
 }
 
@@ -59,7 +95,6 @@ filterGTEx <- function(df, value = 0.05) {
 	reps <- rep(1:nrow(MatchGWAS), TablaGTEx)
 	res <- MatchGWAS[reps, ]
 	return(res)
-
 }
 
 ### AlzGWAS: An R Tool for Drug Repurposing by Functional Annotation of GWAS in Alzheimer's Disease
@@ -115,20 +150,7 @@ message('Done!')
 message('\nMatching GWAS and GTEx Data...')
 
 ### Por aquí estaba
-.extract_rs <- function(df) {
-	res <- c(df[grep("rs", colnames(df), ignore.case=TRUE)])
-	return(res)
-}
 
-.match_rs <- function(df1, df2) {
-	input <- list(df1, df2)
-	RS <- lapply(input, .extract_rs)
-
-	Match1 <- df1[RS[[1]] %in% RS[[2]]]
-	Match2 <- df2[RS[[2]] %in% RS[[1]]]
-
-	
-}
 									
 RSTop <- TopQval[,"rs_id"]
 TopEQTL <- length(RSTop)
