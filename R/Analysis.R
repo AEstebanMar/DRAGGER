@@ -6,35 +6,25 @@ remove_duplicates <- function(df) {
 		rs_column <- grep("rs", colnames(df), ignore.case=TRUE)
 		variants <- df[, rs_column]
 		pval_column <- grep("pval|p-val|qval", colnames(df), ignore.case=TRUE)
-		dupes <- duplicated(variants) | duplicated(variants, fromLast=TRUE)
+		dupes <- duplicated(variants)
 
 		if(!any(dupes)) {
 			return(df)
 		}
 
-		if(length(pval_column) == 0) {
-			message("Duplicate SNPs found in dataset and missing statistical
-				significance. Choosing first occurrence of each duplicate")
-		} else {
+		if(length(pval_column) != 0) {
 			message("Duplicate SNPs found in dataset. Choosing most statistically
 				significant occurrence of each duplicate")
-		}
-		
-		uniques <- df[!dupes, ]
-		dupes <- df[dupes, ]
-		unique_dupes <- unique(dupes[rs_column])
-		dupes_resolved <- data.frame(matrix(ncol=ncol(df),
-			nrow=nrow(unique_dupes)))
-		colnames(dupes_resolved) <- colnames(df)
+			df <- df[order(df[, pval_column]), ]
+			# dupes variable needs to be updated with new df order
+			variants <- df[, rs_column]
+			dupes <- duplicated(variants)
 
-		for(i in 1:nrow(unique_dupes)) {
-			resolve <- dupes[dupes[, rs_column]==unique_dupes[i, ], ]
-			if(length(pval_column) != 0) {
-				resolve <- resolve[order(resolve[, pval_column]), ]
-				}
-			dupes_resolved[i, ] <- resolve[1, ]
-			}
-		res <- rbind(uniques, dupes_resolved)
+		} else {
+			message("Duplicate SNPs found in dataset and missing statistical
+				significance. Choosing first occurrence of each duplicate")
+		}
+		res <- df[!dupes, ]
 		return(res)
 	}
 
