@@ -2,6 +2,13 @@
 
 ### FUNCTIONS
 
+merge_by_rs <- function(df1, df2) {
+	df1_rs_col <- grep("rs", colnames(df1), ignore.case=TRUE)
+	df2_rs_col <- grep("rs", colnames(df2), ignore.case=TRUE)
+	res <- merge(df1, df2, by.x = df1_rs_col, by.y = df2_rs_col)
+	return(res)
+}
+
 remove_duplicates <- function(df) {
 	pval_column <- grep("pval|p-val", colnames(df), ignore.case=TRUE)
 	if(length(pval_column) != 0) {
