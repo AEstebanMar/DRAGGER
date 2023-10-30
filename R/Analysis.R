@@ -3,59 +3,33 @@
 ### FUNCTIONS
 
 remove_duplicates <- function(df) {
-		rs_column <- grep("rs", colnames(df), ignore.case=TRUE)
-		variants <- df[, rs_column]
-		pval_column <- grep("pval|p-val|qval", colnames(df), ignore.case=TRUE)
-		dupes <- duplicated(variants)
-
-		if(!any(dupes)) {
-			return(df)
-		}
-
-		if(length(pval_column) != 0) {
-			message("Duplicate SNPs found in dataset. Choosing most statistically
-				significant occurrence of each duplicate")
+	pval_column <- grep("pval|p-val", colnames(df), ignore.case=TRUE)
+	if(length(pval_column) != 0) {
+			message("Sorting input by statistical significance")
 			df <- df[order(df[, pval_column]), ]
-			# dupes variable needs to be updated with new df order
-			variants <- df[, rs_column]
-			dupes <- duplicated(variants)
-
-		} else {
-			message("Duplicate SNPs found in dataset and missing statistical
-				significance. Choosing first occurrence of each duplicate")
-		}
+	}
+	rs_column <- grep("rs", colnames(df), ignore.case=TRUE)
+	variants <- df[, rs_column]
+	dupes <- duplicated(variants)
+	pval_column <- grep("pval|p-val|qval", colnames(df), ignore.case=TRUE)
+	if(!any(dupes)) {
+		return(df)
+	} else {
+		message("Duplicates found in dataset, choosing first occurrence")
 		res <- df[!dupes, ]
 		return(res)
-	}
-
-merge_by_rs <- function(df1, df2) {
-
-	input <- list(df1, df2)
-	RS <- lapply(input, .extract_rs)
-
-	Match1 <- df1[RS[[1]] %in% RS[[2]]]
-	Match2 <- df2[RS[[2]] %in% RS[[1]]]
-
-	# Now we remove duplicates (should not appear in GWAS, but sometimes do). Not done in previous step in case
-	# each duplicate RS has different values, in which case manual revision is required.
-
-	MatchGWAS <- MatchGWAS[!duplicated(MatchGWAS$RS),]
-
-	# Sort by RS
-
-	MatchGTEx <- MatchGTEx[order(MatchGTEx$rs_id),]
-	MatchGWAS <- MatchGWAS[order(MatchGWAS$RS),]
-
-	MatchGWAS <- .repGWAS(MatchGWAS, MatchGTEx)
-
-	return(MatchGWAS)
-
+	}		
 }
 
-filterGTEx <- function(df, value = 0.05) {
-	sorted_df <- df[order(df$qval)]
-	filtered_df <- sorted_df[seq(nrow(sorted_df)*value), ]
-	return(filtered_df)
+filter_significance <- function(df, value = 0.05) {
+	pval_column <- grep("pval|p-val", colnames(df), ignore.case=TRUE)
+	if(length(pval_column) == 0) {
+		message("No statistical significance column found in input. Returning
+			it as-is")
+		return(df)
+	}
+	res <- df[df[, pval_column] <= value, ]
+	return(res)
 }
 
 ### AUXILIARY FUNCTIONS (NOT EXPORTED)
@@ -64,27 +38,6 @@ filterGTEx <- function(df, value = 0.05) {
 	# This function assumes input is a text file. Might be unorthodox, subject to change
 	df <- read.table(file, header=header, sep="", dec=".")
 	return(df)
-}
-
-.repGWAS <- function(MatchGWAS, MatchGTEx) {
-
-	# RS appear in GTEx more than once, as they can be associated to changes in the expression of multiple genes.
-	# This function takes this into account, and copies each GWAS row accordingly in order to allow merging.
-
-	rsGTEx <- MatchGTEx[,"rs_id"]
-	rsGWAS <- MatchGWAS[,"RS"]
-	rsGTEx <- sort(rsGTEx)	# Sorting both with the same criterion to allow merging.
-	rsGWAS <- sort(rsGWAS)
-	GTExTable <- table(rsGTEx)
-
-	# The result is a vector of the times an RS is repeated in the GTEx table. The GWAS RS are sorted in the same way, and they both
-	# have the same list of RS. This allows to combine the repetitions with the GWAS SNPs to duplicate the necessary rows.
-	# Approach based on Andrew's response to the following post:
-	# https://stackoverflow.com/questions/29743691/duplicate-rows-in-a-data-frame-in-r
-
-	reps <- rep(1:nrow(MatchGWAS), TablaGTEx)
-	res <- MatchGWAS[reps, ]
-	return(res)
 }
 
 ### AlzGWAS: An R Tool for Drug Repurposing by Functional Annotation of GWAS in Alzheimer's Disease
