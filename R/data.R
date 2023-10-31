@@ -33,3 +33,24 @@
 #' }
 #' @source <https://www.gtexportal.org/home/downloads/adult-gtex#qtl>
 "GTEx"
+
+#' Interactions dataset
+#'
+#' interactions.tsv file downloaded from dgidb.org
+#'
+#' @format ## `Interactions`
+#' A data frame with 85460 rows and 11 columns:
+#' \describe{
+#'	\item{gene_name}{GENCODE gene name}
+#'	\item{gene_claim_name}{Alternate gene name, if any}
+#'	\item{entrez_id}{Gene Entrez identifier}
+#'	\item{interaction_claim_source}{Source of claimed interaction}
+#'	\item{interaction_types}{Claimed interaction}
+#'	\item{drug_claim_name}{Drug name}
+#'	\item{drug_concept_id}{Unique CHEMBL drug identifier}
+#'	\item{interaction_group_score}{Statistical significance of interaction.
+#'	Detailed at https://www.dgidb.org/score}
+#'	\item{PMIDs}{}
+#' }
+#' @source <https://www.gtexportal.org/home/downloads/adult-gtex#qtl>
+"Interactions"
