@@ -1,8 +1,7 @@
 
-
 ### FUNCTIONS
 
-remove_duplicates <- function(df) {
+remove_duplicate_rs <- function(df) {
 	pval_column <- grep("pval|p-val", colnames(df), ignore.case=TRUE)
 	if(length(pval_column) != 0) {
 			message("Sorting input by statistical significance")
@@ -32,172 +31,164 @@ filter_significance <- function(df, value = 0.05) {
 	return(res)
 }
 
-### AUXILIARY FUNCTIONS (NOT EXPORTED)
-
-.loadTableFromText <- function(file, header) {
-	# This function assumes input is a text file. Might be unorthodox, subject to change
-	df <- read.table(file, header=header, sep="", dec=".")
-	return(df)
-}
-
 ### Drug analysis. A random analysis is also performed, removing coincidences for the results. This reduces the likelihood
 ### of the found drugs having side effects, an important step on the priorization. Future versions of DAGGER will include
 ### an option to disable this step if a larger drugs list is desired.
 
-message('\nStarting drug interaction analysis...')
+# message('\nStarting drug interaction analysis...')
 
-# Empty fields are switched for "Missing" string.
+# # Empty fields are switched for "Missing" string.
 
-Interactions [Interactions==""] <- "Missing"
+# Interactions [Interactions==""] <- "Missing"
 
-# Store GWAS-GTEx rows for which a drug has been found.
+# # Store GWAS-GTEx rows for which a drug has been found.
 
-FoundGenes <- DepMerge$gene_name %in% Interactions$gene_name
+# FoundGenes <- DepMerge$gene_name %in% Interactions$gene_name
 
-Druggable <- DepMerge [FoundGenes,]
+# Druggable <- DepMerge [FoundGenes,]
 
-# Store DGIdb rows with mach in GWAS-GTEx table.
+# # Store DGIdb rows with mach in GWAS-GTEx table.
 
-FoundDrugs <- Interactions$gene_name %in% DepMerge$gene_name
+# FoundDrugs <- Interactions$gene_name %in% DepMerge$gene_name
 
-Drugs <- Interactions [FoundDrugs,]
+# Drugs <- Interactions [FoundDrugs,]
 
-# Adjustments neccesary due to there being more drugs than genes.
+# # Adjustments neccesary due to there being more drugs than genes.
 
-Druggable <- Druggable[order(Druggable$gene_name),]
+# Druggable <- Druggable[order(Druggable$gene_name),]
 
-Drugs <- Drugs[order(Drugs$gene_name),]
+# Drugs <- Drugs[order(Drugs$gene_name),]
 
-DruggableGenes <- Druggable [,"gene_name"]	
+# DruggableGenes <- Druggable [,"gene_name"]	
 
-DrugGenes <- Drugs [,"gene_name"]
+# DrugGenes <- Drugs [,"gene_name"]
 
-# Due to the way the tables are merged, the gene name column used for merging will be deleted.
-# To prevent this information from being lost, the column is duplicated first.
+# # Due to the way the tables are merged, the gene name column used for merging will be deleted.
+# # To prevent this information from being lost, the column is duplicated first.
 
-Drugs <- cbind(DrugGenes, Drugs)
-
-
-Pharma <- merge(Druggable, Drugs, by.x="gene_name", by.y="gene_name")
-
-# Final check:
-
-if(all(Pharma$gene_name==Pharma$DrugGenes))
-
-{
-
-	if(any(colnames(Pharma)=="DrugGenes"))
-
-		{
-
-		Pharma <- Pharma[-which(colnames(Pharma)=="DrugGenes")]
-
-		}
-
-	message('Drugs identified successfully!')
-
-}
-
-### Filtering for drugs with desired effect
-
-message('\nFiltering for desired interaction...')
-
-Betas <- Pharma$beta < 0
+# Drugs <- cbind(DrugGenes, Drugs)
 
 
-Slopes <- Pharma$slope > 0
+# Pharma <- merge(Druggable, Drugs, by.x="gene_name", by.y="gene_name")
 
-Interaction <- Betas == Slopes
+# # Final check:
 
-# If the "Betas" value matches the "Slopes" value, it means a protector SNP increasing expression
-# levels or a risk SNP decreasing them has been found. In both cases, an activator is desired.
+# if(all(Pharma$gene_name==Pharma$DrugGenes))
 
-Interaction [Interaction == TRUE] = "activator"
+# {
 
-# If they do NOT match, the inverse situations are true. Thus, an inhibitor is desired.
+# 	if(any(colnames(Pharma)=="DrugGenes"))
 
-Interaction [Interaction == FALSE] = "inhibitor"
+# 		{
 
-Recommended = Interaction == Pharma$interaction_types
+# 		Pharma <- Pharma[-which(colnames(Pharma)=="DrugGenes")]
 
-# Cases where the known interaction is not "activator" or "inhibitor", a question mark is introduced.
-# Deciding if said drugs are appropriate requires further analysis, currently not included in DAGGER.
+# 		}
 
-Recommended [!Pharma$interaction_types %in% c("inhibitor","activator")] = "?"
+# 	message('Drugs identified successfully!')
 
-RecPharma = cbind (Pharma, Interaction, Recommended)
+# }
 
-DruggableTargets = length(unique(RecPharma$gene_name))
+# ### Filtering for drugs with desired effect
 
-Candidates = RecPharma[Recommended==TRUE,]
+# message('\nFiltering for desired interaction...')
 
-TreatableTargets = length(unique(Candidates$gene_name))
+# Betas <- Pharma$beta < 0
 
-message('Filtering complete!')
 
-### Found drugs are compared with Alzforum Therapeutics Alzheimer Disease table to check for already tested drugs.
+# Slopes <- Pharma$slope > 0
+
+# Interaction <- Betas == Slopes
+
+# # If the "Betas" value matches the "Slopes" value, it means a protector SNP increasing expression
+# # levels or a risk SNP decreasing them has been found. In both cases, an activator is desired.
+
+# Interaction [Interaction == TRUE] = "activator"
+
+# # If they do NOT match, the inverse situations are true. Thus, an inhibitor is desired.
+
+# Interaction [Interaction == FALSE] = "inhibitor"
+
+# Recommended = Interaction == Pharma$interaction_types
+
+# # Cases where the known interaction is not "activator" or "inhibitor", a question mark is introduced.
+# # Deciding if said drugs are appropriate requires further analysis, currently not included in DAGGER.
+
+# Recommended [!Pharma$interaction_types %in% c("inhibitor","activator")] = "?"
+
+# RecPharma = cbind (Pharma, Interaction, Recommended)
+
+# DruggableTargets = length(unique(RecPharma$gene_name))
+
+# Candidates = RecPharma[Recommended==TRUE,]
+
+# TreatableTargets = length(unique(Candidates$gene_name))
+
+# message('Filtering complete!')
+
+# ### Found drugs are compared with Alzforum Therapeutics Alzheimer Disease table to check for already tested drugs.
 	
-message('\nRemoving Alzforum matches...')
+# message('\nRemoving Alzforum matches...')
 
-# Unification of name formats. First word is selected, as we will consider entries such as "Metformin" and
-# "Metformin Hydroclorate" to be the same drug.
+# # Unification of name formats. First word is selected, as we will consider entries such as "Metformin" and
+# # "Metformin Hydroclorate" to be the same drug.
 
-CandidatesName = toupper(stringr::str_split_fixed(Candidates$drug_claim_primary_name, " ", 2)[,1])
+# CandidatesName = toupper(stringr::str_split_fixed(Candidates$drug_claim_primary_name, " ", 2)[,1])
 
-AlzforumName = toupper(stringr::str_split_fixed(Alzforum$Name, " ", 2)[,1])
+# AlzforumName = toupper(stringr::str_split_fixed(Alzforum$Name, " ", 2)[,1])
 
-# Elimination of special characters, which are problematic.
+# # Elimination of special characters, which are problematic.
 
-CandidatesName = gsub ( "[^0-9A-Za-z///' ]" , "'" , CandidatesName)
+# CandidatesName = gsub ( "[^0-9A-Za-z///' ]" , "'" , CandidatesName)
 
-AlzforumName = gsub ( "[^0-9A-Za-z///' ]" , "'" , AlzforumName)
+# AlzforumName = gsub ( "[^0-9A-Za-z///' ]" , "'" , AlzforumName)
 
-# Apostrophes are removed.
+# # Apostrophes are removed.
 
-CandidatesName = gsub ( "'" , "" , CandidatesName)
+# CandidatesName = gsub ( "'" , "" , CandidatesName)
 
-AlzforumName = gsub ( "'" , "" , AlzforumName)
+# AlzforumName = gsub ( "'" , "" , AlzforumName)
 
-# This approach has a limitation. Drugs with names such as "Compund 31" or "EGFR inhibitor" are not properly considered
-# in Candidates-Alzforum matching. However, such names are assigned to little-known drugs, which are yet to be tested
-# for any disease and therefore will not have a match. In any case, they are in very small number, making manual
-# confirmation very easy.
+# # This approach has a limitation. Drugs with names such as "Compund 31" or "EGFR inhibitor" are not properly considered
+# # in Candidates-Alzforum matching. However, such names are assigned to little-known drugs, which are yet to be tested
+# # for any disease and therefore will not have a match. In any case, they are in very small number, making manual
+# # confirmation very easy.
 
-New = !CandidatesName%in%AlzforumName
+# New = !CandidatesName%in%AlzforumName
 
-NewCandidates = Candidates[New,]
+# NewCandidates = Candidates[New,]
 
-write.table(NewCandidates, row.names = FALSE, sep = "\t", "Results.tsv")
+# write.table(NewCandidates, row.names = FALSE, sep = "\t", "Results.tsv")
 
-message('Done!')
+# message('Done!')
 
-message('\nAnalysis complete!\n')
+# message('\nAnalysis complete!\n')
 
-setwd('../')
+# setwd('../')
 
-cat("\nTotal GTEx Genes:\n", file="Summary.txt", append = TRUE)
-cat(TotalGenes, file="Summary.txt", append = TRUE)
-cat("\nTotal GTEx eQTL:\n", file="Summary.txt", append = TRUE)
-cat(TotalEQTL, file="Summary.txt", append = TRUE)
-cat("\nQ-value cutoff:\n", file="Summary.txt", append = TRUE)
-cat(Qcutoff, file="Summary.txt", append = TRUE)
-cat(" %\n", file="Summary.txt", append = TRUE)
-cat("Filtered genes:\n", file="Summary.txt", append = TRUE)
-cat(TopGenes, file="Summary.txt", append = TRUE)
-cat("\nFiltered GTEx eQTL:\n", file="Summary.txt", append = TRUE)
-cat(TopEQTL, file="Summary.txt", append = TRUE)
-cat("\nMax Q-value:\n", file="Summary.txt", append = TRUE)
-cat(TopQval[nrow(TopQval),"qval"], file="Summary.txt", append = TRUE)
-cat("\nSignificant eQTLs:\n", file="Summary.txt", append = TRUE)
-cat(matchedSigPols, file="Summary.txt", append = TRUE)
-cat("\nRandom eQTLs:\n", file="Summary.txt", append = TRUE)
-cat(matchedRandPols, file="Summary.txt", append = TRUE)
-cat("\nFinal eQTLs:\n", file="Summary.txt", append = TRUE)
-cat(DepEQTL, file="Summary.txt", append = TRUE)
-cat("\nTotal potential targets:\n", file="Summary.txt", append = TRUE)
-cat(PotentialTargets, file="Summary.txt", append = TRUE)
-cat("\nTotal druggable targets:\n", file="Summary.txt", append = TRUE)
-cat(DruggableTargets, file="Summary.txt", append = TRUE)
-cat("\nTotal treatable targets:\n", file="Summary.txt", append = TRUE)
-cat(TreatableTargets, file="Summary.txt", append = TRUE)
+# cat("\nTotal GTEx Genes:\n", file="Summary.txt", append = TRUE)
+# cat(TotalGenes, file="Summary.txt", append = TRUE)
+# cat("\nTotal GTEx eQTL:\n", file="Summary.txt", append = TRUE)
+# cat(TotalEQTL, file="Summary.txt", append = TRUE)
+# cat("\nQ-value cutoff:\n", file="Summary.txt", append = TRUE)
+# cat(Qcutoff, file="Summary.txt", append = TRUE)
+# cat(" %\n", file="Summary.txt", append = TRUE)
+# cat("Filtered genes:\n", file="Summary.txt", append = TRUE)
+# cat(TopGenes, file="Summary.txt", append = TRUE)
+# cat("\nFiltered GTEx eQTL:\n", file="Summary.txt", append = TRUE)
+# cat(TopEQTL, file="Summary.txt", append = TRUE)
+# cat("\nMax Q-value:\n", file="Summary.txt", append = TRUE)
+# cat(TopQval[nrow(TopQval),"qval"], file="Summary.txt", append = TRUE)
+# cat("\nSignificant eQTLs:\n", file="Summary.txt", append = TRUE)
+# cat(matchedSigPols, file="Summary.txt", append = TRUE)
+# cat("\nRandom eQTLs:\n", file="Summary.txt", append = TRUE)
+# cat(matchedRandPols, file="Summary.txt", append = TRUE)
+# cat("\nFinal eQTLs:\n", file="Summary.txt", append = TRUE)
+# cat(DepEQTL, file="Summary.txt", append = TRUE)
+# cat("\nTotal potential targets:\n", file="Summary.txt", append = TRUE)
+# cat(PotentialTargets, file="Summary.txt", append = TRUE)
+# cat("\nTotal druggable targets:\n", file="Summary.txt", append = TRUE)
+# cat(DruggableTargets, file="Summary.txt", append = TRUE)
+# cat("\nTotal treatable targets:\n", file="Summary.txt", append = TRUE)
+# cat(TreatableTargets, file="Summary.txt", append = TRUE)
 
