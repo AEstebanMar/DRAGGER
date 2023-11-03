@@ -12,9 +12,8 @@
 	}
 
 	if (length(columns) > 1) {
-		message("WARNING")
 		warning('Multiple matches found. Choosing column with the most
-			unique names for standardising')
+			unique names', immediate. = TRUE)
 		uniques <- lapply(X = df[columns], FUN = function(x) length(unique(x)))
 		longest <- which.max(unlist(uniques))
 		colnames(df)[columns[longest]] <- new_name
