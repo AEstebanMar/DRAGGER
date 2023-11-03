@@ -32,6 +32,15 @@ filter_significance <- function(df, value = 0.05) {
 	return(res)
 }
 
+DAGGER <- function(GWAS, GTEx, DGI) {
+	GWAS <- remove_duplicate_rs(parse_column_names(GWAS))
+	GTEx <- parse_column_names(GTEx)
+	DGI <- parse_column_names(DGI)
+
+	res <- merge(GWAS, GTEx, by = gene_id)
+	return(GWAS-GTEx)
+}
+
 ### Drug analysis. A random analysis is also performed, removing coincidences for the results. This reduces the likelihood
 ### of the found drugs having side effects, an important step on the priorization. Future versions of DAGGER will include
 ### an option to disable this step if a larger drugs list is desired.
