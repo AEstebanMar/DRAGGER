@@ -2,20 +2,21 @@
 ### FUNCTIONS
 
 remove_duplicate_rs <- function(df) {
-	pval_column <- grep("pval|p-val", colnames(df), ignore.case=TRUE)
-	if(length(pval_column) != 0) {
-			message("Sorting input by statistical significance")
-			df <- df[order(df[, pval_column]), ]
+
+	if(!is.null(df$p_value)) {
+		message("Sorting input by statistical significance")
+		df <- df[order(df$p_value), ]
 	}
-	rs_column <- grep("rs", colnames(df), ignore.case=TRUE)
-	variants <- df[, rs_column]
-	dupes <- duplicated(variants)
-	pval_column <- grep("pval|p-val|qval", colnames(df), ignore.case=TRUE)
-	if(!any(dupes)) {
+	if(is.null(df$rs_id)) {
+		stop('RS ID column not found or not properly parsed. Please run input
+			through DAGGER::parse_column_names()')
+	}
+
+	if(!any(duplicated(df$rs_id))) {
 		return(df)
 	} else {
 		message("Duplicates found in dataset, choosing first occurrence")
-		res <- df[!dupes, ]
+		res <- df[!duplicated(df$rs_id), ]
 		return(res)
 	}		
 }
