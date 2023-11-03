@@ -33,7 +33,9 @@ filter_significance <- function(df, value = 0.05) {
 }
 
 DAGGER <- function(GWAS, GTEx, DGIdb) {
-	GWAS <- remove_duplicate_rs(parse_column_names(GWAS))
+	GWAS <- remove_duplicate_rs(
+				filter_significance(parse_column_names(GWAS_test), 0.05)
+				)
 	GTEx <- filter_significance(parse_column_names(GTEx), 0.05)
 	DGIdb <- parse_column_names(DGIdb)
 
