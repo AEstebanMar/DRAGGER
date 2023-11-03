@@ -53,9 +53,9 @@
 #' parse_column_names(GTEx_demo)
 
 parse_column_names <- function(df) {
-	df <- .rename_column(df, "pval|p-val", "p_value", 1)
+	df <- .rename_column(df, "p.*val", "p_value", 1)
 	df <- .rename_column(df, "rs", "rs_id")
-	df <- .rename_column(df, "gene.*id", "gene_id")
+	df <- .rename_column(df, "gene.*name|gene.*symbol", "gene_symbol")
 	df <- .rename_column(df, "drug.*name", "drug_name")
 	return(df)
 }	
