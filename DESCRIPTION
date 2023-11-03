@@ -1,5 +1,5 @@
 Package: DAGGER
-Title: What the Package Does (One Line, Title Case)
+Title: Drug repositioning by Analysis of GWAS and Gene Expression in R
 Version: 0.0.0.9000
 Authors@R: 
     person("Alvaro", "Esteban-Martos", , "alvaroesteban@uma.com", role = c("aut", "cre"),
