@@ -22,22 +22,22 @@ remove_duplicate_rs <- function(df) {
 }
 
 filter_significance <- function(df, value = 0.05) {
-	pval_column <- grep("pval|p-val", colnames(df), ignore.case=TRUE)
-	if(length(pval_column) == 0) {
-		message("No statistical significance column found in input. Returning
-			it as-is")
+	if(is.null(df$p_value)) {
+		message("No statistical significance column found in input or improperly
+			parsed. You might want to run it through DAGGER::parse_column_names
+			first. Returning it as-is")
 		return(df)
 	}
-	res <- df[df[, pval_column] <= value, ]
+	res <- df[df$p_value <= value, ]
 	return(res)
 }
 
 DAGGER <- function(GWAS, GTEx, DGI) {
 	GWAS <- remove_duplicate_rs(parse_column_names(GWAS))
-	GTEx <- parse_column_names(GTEx)
+	GTEx <- filter_significance(parse_column_names(GTEx), 0.05)
 	DGI <- parse_column_names(DGI)
 
-	res <- merge(GWAS, GTEx, by = gene_id)
+	GWAS-GTEx <- merge(GWAS, GTEx, by = "gene_id")
 	return(GWAS-GTEx)
 }
 
