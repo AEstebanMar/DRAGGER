@@ -34,11 +34,11 @@
 #' @source <https://www.gtexportal.org/home/downloads/adult-gtex#qtl>
 "GTEx"
 
-#' Interactions dataset
+#' DGIdb dataset
 #'
 #' interactions.tsv file downloaded from dgidb.org
 #'
-#' @format ## `Interactions`
+#' @format ## `DGIdb`
 #' A data frame with 85460 rows and 11 columns:
 #' \describe{
 #'	\item{gene_name}{GENCODE gene name}
@@ -53,4 +53,4 @@
 #'	\item{PMIDs}{}
 #' }
 #' @source <https://www.gtexportal.org/home/downloads/adult-gtex#qtl>
-"Interactions"
+"DGIdb"
