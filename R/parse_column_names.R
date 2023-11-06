@@ -20,7 +20,7 @@
 	}
 
 	if (length(columns) > max_matches) {
-		error('Matches exceed max allowed value for column type. Please
+		stop('Matches exceed max allowed value for column type. Please
 			choose one and remove or rename the others (e.g por expression data,
 			choose p-value for strengh of variant-expression association')
 	}
@@ -54,7 +54,7 @@
 
 parse_column_names <- function(df) {
 	df <- .rename_column(df, "p.*val|^p$", "p_value", 1)
-	df <- .rename_column(df, "rs", "rs_id")
+	df <- .rename_column(df, "rs|^snp.*$|^snp.*id", "rs_id")
 	df <- .rename_column(df, "gene.*name|gene.*symbol", "gene_symbol")
 	df <- .rename_column(df, "drug.*name", "drug_name")
 	return(df)
