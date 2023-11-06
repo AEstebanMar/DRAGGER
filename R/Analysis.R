@@ -32,6 +32,23 @@ filter_significance <- function(df, value = 0.05) {
 	return(res)
 }
 
+predict_effect <- function(gene_variant_df) {
+	# Logic: negative betas mean protection, positive betas mean risk.
+	# Negative slopes mean lower expression, positive slopes mean higher 
+	# expression. If signs are opposite (prediction == TRUE), either the risk 
+	# variant decreases expression or the protective variant increases it,
+	# therefore an activator could be beneficial. If signs are equal
+	# (prediction == FALSE), either the protective variant decreases expression
+	# or the risk variant increases it. Either way, an inhibitor is desired.
+	betas <- gene_variant_df$beta < 0
+	slopes <- gene_variant_df$slope > 0
+	prediction <- betas == slopes
+	prediction[prediction == TRUE] <- "activator"
+	prediction[prediction == FALSE] <- "inhibitor"
+	res <- cbind(gene_variant_df, prediction)
+	return(res)
+}
+
 merge_gene_var_drug <- function(GWAS, GTEx, DGIdb) {
 
 	message('Parsing variant data')
@@ -43,14 +60,18 @@ merge_gene_var_drug <- function(GWAS, GTEx, DGIdb) {
 	message('Parsing drug data')
 	DGIdb <- parse_column_names(DGIdb)
 
-	message('Merging')
+	message('Merging genes and variants')
 	gene_variants <- merge(GWAS, GTEx, by = "rs_id")
+	message('Merging with drug database')
 	res <- merge(gene_variants, DGIdb, by = "gene_symbol")
 	return(res)
 }
 
 DAGGER <- function(GWAS, GTEx, DGIdb) {
 	merged <- merge_gene_var_drug(GWAS = GWAS, GTEx = GTEx, DGIdb = DGIdb)
+
+	message('Predicting beneficial drug effect')
+	predicted_gene_variants <- predict_effect(merged)
 }
 
 ### Drug analysis. A random analysis is also performed, removing coincidences for the results. This reduces the likelihood
