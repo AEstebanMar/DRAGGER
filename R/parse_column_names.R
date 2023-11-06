@@ -54,6 +54,7 @@
 
 parse_column_names <- function(df) {
 	df <- .rename_column(df, "p.*val|^p$", "p_value", 1)
+	df <- .rename_column(df, "beta$", "beta", 1)
 	df <- .rename_column(df, "rs|^snp.*$|^snp.*id", "rs_id")
 	df <- .rename_column(df, "gene.*name|gene.*symbol", "gene_symbol")
 	df <- .rename_column(df, "drug.*name", "drug_name")
