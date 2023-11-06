@@ -33,12 +33,17 @@ filter_significance <- function(df, value = 0.05) {
 }
 
 merge_gene_var_drug <- function(GWAS, GTEx, DGIdb) {
+
+	message('Parsing variant data')
 	GWAS <- remove_duplicate_rs(
 				filter_significance(parse_column_names(GWAS), 0.05)
 				)
+	message('Parsing expression data')
 	GTEx <- filter_significance(parse_column_names(GTEx), 0.05)
+	message('Parsing drug data')
 	DGIdb <- parse_column_names(DGIdb)
 
+	message('Merging')
 	gene_variants <- merge(GWAS, GTEx, by = "rs_id")
 	res <- merge(gene_variants, DGIdb, by = "gene_symbol")
 	return(res)
