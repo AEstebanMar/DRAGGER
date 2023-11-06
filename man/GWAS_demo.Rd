@@ -16,13 +16,13 @@ A data frame with 6 rows and 3 columns:
 }
 }
 \source{
-\url{https://www.ebi.ac.uk/gwas/}
+\url{https://www.ebi.ac.uk/gwas/studies/GCST90245848}
 }
 \usage{
 GWAS_demo
 }
 \description{
-A very small Alzheimer's Diseasevariant risk association taken from The GWAS
-Catalog via the gwasrapidd package
+A height Genome-Wide Association Study taken from The GWAS
+Catalog using the gwasrapidd package
 }
 \keyword{datasets}
