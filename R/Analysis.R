@@ -32,9 +32,9 @@ filter_significance <- function(df, value = 0.05) {
 	return(res)
 }
 
-DAGGER <- function(GWAS, GTEx, DGIdb) {
+merge_gene_var_drug <- function(GWAS, GTEx, DGIdb) {
 	GWAS <- remove_duplicate_rs(
-				filter_significance(parse_column_names(GWAS_test), 0.05)
+				filter_significance(parse_column_names(GWAS), 0.05)
 				)
 	GTEx <- filter_significance(parse_column_names(GTEx), 0.05)
 	DGIdb <- parse_column_names(DGIdb)
@@ -42,6 +42,10 @@ DAGGER <- function(GWAS, GTEx, DGIdb) {
 	gene_variants <- merge(GWAS, GTEx, by = "rs_id")
 	res <- merge(gene_variants, DGIdb, by = "gene_symbol")
 	return(res)
+}
+
+DAGGER <- function(GWAS, GTEx, DGIdb) {
+	merged <- merge_gene_var_drug(GWAS = GWAS, GTEx = GTEx, DGIdb = DGIdb)
 }
 
 ### Drug analysis. A random analysis is also performed, removing coincidences for the results. This reduces the likelihood
