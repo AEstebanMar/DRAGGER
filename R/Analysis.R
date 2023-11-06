@@ -40,6 +40,7 @@ predict_effect <- function(gene_variant_df) {
 	# therefore an activator could be beneficial. If signs are equal
 	# (prediction == FALSE), either the protective variant decreases expression
 	# or the risk variant increases it. Either way, an inhibitor is desired.
+	message('Predicting beneficial drug effect')
 	betas <- gene_variant_df$beta < 0
 	slopes <- gene_variant_df$slope > 0
 	prediction <- betas == slopes
@@ -47,6 +48,29 @@ predict_effect <- function(gene_variant_df) {
 	prediction[prediction == FALSE] <- "inhibitor"
 	res <- cbind(gene_variant_df, prediction)
 	return(res)
+}
+
+.is.candidate <- function(DAGGER_df, dict) {
+	broad_type <- rep(NULL, nrow(DAGGER_df))
+	broad_type[DAGGER_df$interaction_types %in% dict$activator] <- "activator"
+	broad_type[DAGGER_df$interaction_types %in% dict$inhibitor] <- "inhibitor"
+	candidates <- DAGGER_df$prediction == broad_type
+	return(candidates)
+}
+
+get_candidates <- function(DAGGER_df) {
+	message("Producing list of candidates for repositioning")
+	dict <- list(
+		activator = c("agonist", "activator", "positive modulator",
+			"partial agonist", "inducer", "allosteric modulator"),
+		inhibitor = c("inhibitor", "blocker", "antagonist", "inverse agonist",
+			"negative modulator", "antisense oligonucleotide", "suppressor",
+			"inhibitory allosteric modulator")
+		)
+	candidates <- .is.candidate(DAGGER_df, dict)
+	DAGGER_df$candidate <- NULL
+	DAGGER_df$candidate[candidates] <- TRUE
+	return(DAGGER_df)
 }
 
 merge_gene_var_drug <- function(GWAS, GTEx, DGIdb) {
@@ -70,78 +94,16 @@ merge_gene_var_drug <- function(GWAS, GTEx, DGIdb) {
 DAGGER <- function(GWAS, GTEx, DGIdb) {
 	merged <- merge_gene_var_drug(GWAS = GWAS, GTEx = GTEx, DGIdb = DGIdb)
 
-	message('Predicting beneficial drug effect')
-	predicted_gene_variants <- predict_effect(merged)
+	
+	DAGGER_df <- predict_effect(merged)
+	res <- get_candidates(DAGGER_df)
+	return(res)
 }
 
 ### Drug analysis. A random analysis is also performed, removing coincidences for the results. This reduces the likelihood
 ### of the found drugs having side effects, an important step on the priorization. Future versions of DAGGER will include
 ### an option to disable this step if a larger drugs list is desired.
 
-# message('\nStarting drug interaction analysis...')
-
-# # Empty fields are switched for "Missing" string.
-
-# Interactions [Interactions==""] <- "Missing"
-
-# # Store GWAS-GTEx rows for which a drug has been found.
-
-# FoundGenes <- DepMerge$gene_name %in% Interactions$gene_name
-
-# Druggable <- DepMerge [FoundGenes,]
-
-# # Store DGIdb rows with mach in GWAS-GTEx table.
-
-# FoundDrugs <- Interactions$gene_name %in% DepMerge$gene_name
-
-# Drugs <- Interactions [FoundDrugs,]
-
-# # Adjustments neccesary due to there being more drugs than genes.
-
-# Druggable <- Druggable[order(Druggable$gene_name),]
-
-# Drugs <- Drugs[order(Drugs$gene_name),]
-
-# DruggableGenes <- Druggable [,"gene_name"]	
-
-# DrugGenes <- Drugs [,"gene_name"]
-
-# # Due to the way the tables are merged, the gene name column used for merging will be deleted.
-# # To prevent this information from being lost, the column is duplicated first.
-
-# Drugs <- cbind(DrugGenes, Drugs)
-
-
-# Pharma <- merge(Druggable, Drugs, by.x="gene_name", by.y="gene_name")
-
-# # Final check:
-
-# if(all(Pharma$gene_name==Pharma$DrugGenes))
-
-# {
-
-# 	if(any(colnames(Pharma)=="DrugGenes"))
-
-# 		{
-
-# 		Pharma <- Pharma[-which(colnames(Pharma)=="DrugGenes")]
-
-# 		}
-
-# 	message('Drugs identified successfully!')
-
-# }
-
-# ### Filtering for drugs with desired effect
-
-# message('\nFiltering for desired interaction...')
-
-# Betas <- Pharma$beta < 0
-
-
-# Slopes <- Pharma$slope > 0
-
-# Interaction <- Betas == Slopes
 
 # # If the "Betas" value matches the "Slopes" value, it means a protector SNP increasing expression
 # # levels or a risk SNP decreasing them has been found. In both cases, an activator is desired.
