@@ -38,11 +38,10 @@
 #' Can also recognise, but does not require, a p-value column. Please ensure
 #' only one of those columns exists in data frame, or rename those not wanted
 #' for analysis to anything not matching "p-val" or "pval".
-#' @returns A data frame of same dimensions as `df` with RS ID, gene ID,
-#' drug name and p-value (if found) named to DAGGER standards "rs_id",
-#' "gene_id", "drug_name", "pvalue". Functions further down the pipeline expect
-#' columns with said names. A warning will be given if multiple matches are
-#' found for any column other than p-value, which returns an error.
+#' @returns Input dataframe with RS ID, gene ID, drug name and p-value
+#' (if found) renamed to DAGGER standards "rs_id", "gene_id", "drug_name",
+#' "pvalue". A warning will be given if multiple matches are found for any
+#' column other than p-value, which returns an error.
 #' @examples
 #' print(GWAS_demo)
 #' parse_column_names(GWAS_demo)
