@@ -13,16 +13,21 @@
 #' print(example_df)
 #' example_df <- predict_effect(example_df)
 #' print(example_df)
+#' @section Logic behind the function:
+#' * Negative betas mean protection
+#' * Positive betas mean risk.
+#' * Negative slopes mean lower expression
+#' * Positive slopes mean higher expression.
+#' * If signs are opposite (prediction == TRUE), either the risk 
+#' variant decreases expression or the protective variant increases it,
+#' therefore an activator could be beneficial.
+#' * If signs are equal (prediction == FALSE), either the protective variant
+#' decreases expression or the risk variant increases it. Either way,
+#' an inhibitor would be appropriate.
 #' @export
 
 predict_effect <- function(gene_variant_df) {
-	# Logic: negative betas mean protection, positive betas mean risk.
-	# Negative slopes mean lower expression, positive slopes mean higher 
-	# expression. If signs are opposite (prediction == TRUE), either the risk 
-	# variant decreases expression or the protective variant increases it,
-	# therefore an activator could be beneficial. If signs are equal
-	# (prediction == FALSE), either the protective variant decreases expression
-	# or the risk variant increases it. Either way, an inhibitor is desired.
+
 	message('Predicting beneficial drug effect')
 	betas <- gene_variant_df$beta < 0
 	slopes <- gene_variant_df$slope > 0
@@ -41,12 +46,14 @@ predict_effect <- function(gene_variant_df) {
 	return(candidates)
 }
 
-#' Filter dataframe by p-value
+#' Filter potential candidates for drug repositioning
 #' 
-#' `filter_significance` filters out all rows in a data frame below input
-#' p-value (default 0.05).
-#' @param df A DAGGER-parsed data frame.
-#' @returns A subset of the original data frame with all rows passing filter.
+#' `get_candidates` compares predicted beneficial drug effect with described
+#' gene-drug interaction. If they match, row is marked as potential candidate.
+#' @param DAGGER_df A complete DAGGER dataset, containing risk-gene-drug
+#' associations and predicted beneficial effect.
+#' @returns Input dataset with an additional column recommending candidates
+#' for drug repositioning.
 #' @examples
 #' example_df <- parse_column_names(head(GWAS_demo))
 #' print(example_df)
