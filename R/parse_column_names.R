@@ -50,6 +50,7 @@
 #' GTEx_demo <- head(GTEx)
 #' print(GTEx_demo)
 #' parse_column_names(GTEx_demo)
+#' @export
 
 parse_column_names <- function(df) {
 	df <- .rename_column(df, "p.*val|^p$", "p_value", 1)

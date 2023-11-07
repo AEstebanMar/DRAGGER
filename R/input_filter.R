@@ -18,6 +18,7 @@
 #' dupes_example <- parse_column_names(dupes_example)
 #' print(dupes_example)
 #' print(remove_duplicate_rs(dupes_example))
+#' @export
 
 remove_duplicate_rs <- function(df) {
 
@@ -50,6 +51,7 @@ remove_duplicate_rs <- function(df) {
 #' print(example_df)
 #' example_df <- filter_significance(example_df, 1e-20)
 #' print(example_df)
+#' @export
 
 filter_significance <- function(df, value = 0.05) {
 	if(is.null(df$p_value)) {
