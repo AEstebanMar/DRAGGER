@@ -31,7 +31,7 @@
 #' Parse column names to package standard
 #' 
 #' `parse_column_names` takes an input data frame and renames set columns in
-#' order to make them recognisable by other DAGGER functions.
+#' order to simplify manipulation by other DAGGER functions.
 #' @param df A data frame. Must contain at least one of the columns expected
 #' for analysis (RS ID, gene ID, drug name). If multiple columns exist for
 #' any of this information, function will choose the one with most unique names.
