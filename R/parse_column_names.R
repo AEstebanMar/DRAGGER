@@ -44,7 +44,6 @@
 #' columns with said names. A warning will be given if multiple matches are
 #' found for any column other than p-value, which returns an error.
 #' @examples
-#' data(GWAS_demo)
 #' print(GWAS_demo)
 #' parse_column_names(GWAS_demo)
 #' data(GTEx)

@@ -9,7 +9,6 @@
 #' duplicate will remain, or the most statistically significant if p-value
 #' column is found'
 #' @examples
-#' data(GWAS_demo)
 #' dupes_example <- data.frame(
 #'							rs_id=c("rs2710888", "rs182532", "rs9660106"),
 #' 							pvalue=c(2e-58, 1e-17, 2e-12),
@@ -47,7 +46,6 @@ remove_duplicate_rs <- function(df) {
 #' @param df A DAGGER-parsed data frame.
 #' @returns A subset of the original data frame with all rows passing filter.
 #' @examples
-#' data(GWAS_demo)
 #' example_df <- parse_column_names(head(GWAS_demo))
 #' print(example_df)
 #' example_df <- filter_significance(example_df, 1e-20)
