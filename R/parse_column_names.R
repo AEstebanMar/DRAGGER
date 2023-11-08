@@ -43,12 +43,8 @@
 #' "pvalue". A warning will be given if multiple matches are found for any
 #' column other than p-value, which returns an error.
 #' @examples
-#' print(GWAS_demo)
-#' parse_column_names(GWAS_demo)
-#' data(GTEx)
-#' GTEx_demo <- head(GTEx)
-#' print(GTEx_demo)
-#' parse_column_names(GTEx_demo)
+#' parse_column_names(head(GWAS_demo))
+#' parse_column_names(head(GTEx))
 #' @export
 
 parse_column_names <- function(df) {
