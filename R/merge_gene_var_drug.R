@@ -17,17 +17,19 @@
 
 merge_gene_var_drug <- function(GWAS, GTEx, DGIdb) {
 
-	message('Parsing variant data')
+	message('\n\nParsing variant data\n\n')
 	GWAS <- remove_duplicate_rs(
 				filter_significance(parse_column_names(GWAS), 0.05)
 				)
-	message('Parsing expression data')
+	message('\n\nParsing expression data\n\n')
 	GTEx <- filter_significance(parse_column_names(GTEx), 0.05)
-	message('Parsing drug data')
+	message('\n\nParsing drug-gene data\n\n')
 	DGIdb <- parse_column_names(DGIdb)
 
 	message('Merging genes and variants')
 	gene_variants <- merge(GWAS, GTEx, by = "rs_id")
+	colnames(gene_variants)[c(2, 10)] <- c("p_val_variant", "p_val_nominal")
+
 	message('Merging with drug database')
 	res <- merge(gene_variants, DGIdb, by = "gene_symbol")
 	return(res)
