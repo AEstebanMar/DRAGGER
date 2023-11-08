@@ -1,10 +1,11 @@
 Package: DAGGER
 Title: Drug repositioning by Analysis of GWAS and Gene Expression in R
 Version: 0.0.0.9000
-Authors@R: 
-    person("Alvaro", "Esteban-Martos", , "alvaroesteban@uma.com", role = c("aut", "cre"),
-           comment = c(ORCID = "ORCID: 0000-0001-9791-7779"))
-Description: Package for drug repositioning using GWAS and Gene Expression data.
+Authors@R: person("Alvaro", "Esteban-Martos", , "alvaroesteban@uma.com", role = c("aut", "cre"),
+  comment = c(ORCID = "ORCID: 0000-0001-9791-7779"))
+Description: Tools to perform drug repositioning analysis in R by merging
+  gene-variant datasets and searching desired effect in a drug-gene interaction
+  database.
 License: `use_gpl3_license()`
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -16,3 +17,5 @@ VignetteBuilder: knitr
 Depends: 
     R (>= 2.10)
 LazyData: true
+URL: https://github.com/AEstebanMar/DAGGER
+BugReports: https://github.com/AEstebanMar/DAGGER/issues
