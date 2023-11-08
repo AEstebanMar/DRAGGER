@@ -13,7 +13,6 @@
 #' GTEx_example <- GTEx[c(1:5, 1598, 146580, 219755), ]
 #' DGIdb_example <- DGIdb[c((10:14), 5307, 5853, 8511), ]
 #' merged <- merge_gene_var_drug(GWAS_example, GTEx_example, DGIdb_example)
-#' print(merged_example)
 #' @export
 
 merge_gene_var_drug <- function(GWAS, GTEx, DGIdb) {
