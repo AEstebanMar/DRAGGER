@@ -71,7 +71,7 @@ get_candidates <- function(DAGGER_df) {
 			"inhibitory allosteric modulator")
 		)
 	candidates <- .is.candidate(DAGGER_df, dict)
-	DAGGER_df$candidate <- NULL
+	DAGGER_df$candidate <- FALSE
 	DAGGER_df$candidate[candidates] <- TRUE
 	return(DAGGER_df)
 }
