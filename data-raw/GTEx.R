@@ -9,6 +9,8 @@ GTEx <- read.table ("Merged_eQTL.txt", header=TRUE,
 					"gene_name", "strand", "variant_id", "tss_distance",
 					"rs_id_dbSNP151_GRCh38p7","pval_nominal","slope")]
 GTEx$pval_nominal <- as.numeric(GTEx$pval_nominal)
+colnames(GTEx)[5] <- variant_information
+
 
 split_first_col <- do.call(rbind,
 						strsplit(GTEx$file_name.gene_id, ".v8.egenes.txt,"))
