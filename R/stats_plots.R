@@ -1,54 +1,97 @@
-#! /usr/bin/env Rscript
 
-VolcanoPlot <- function (x, y, ORcutoff=0.6, pvalcutoff=0.001, title, fontsize=32) { # Code adapted from https://biocorecrg.github.io/CRG_RIntroduction/volcano-plots.html
-	
-	df <- data.frame("Odds_Ratio"=10**x, "Pvalue"=y)
+#' Volcano plot of variant p-value versus odds ratio
+#' 
+#' `plot_volcano` plots log2 of variant odds ratio versus log10 of p-value
+#' for a given DAGGER-parsed dataframe containing variant data.
+#' @param df A DAGGER-parsed data frame containing p-value and beta number
+#' columns.
+#' @param title Title of the resulting plot.
+#' @param or_cutoff Value from which statistical significance line position for
+#' odds ratio (X axis) will be calculated. Symmetrical line will be drawn in
+#' opposite value in X-axis (log2 of odds-ratio distribution is symmetrical).
+#' @param pval_cutoff Value from which statistical significance line position
+#' for p-value (Y axis) will be calculated.
+#' @returns A vulcano plot of the provided distributions.
+#' @examples
+#' GWAS_example <- GWAS_demo
+#' colnames(GWAS_example) <- c("rs_id", "p_value", "beta_number")
+#' plot_volcano(GWAS_example)
+#' @export
 
-	tiff(file= paste0(title,".tiff"), units="cm",
-		width=35, height=30, res=300)
+plot_volcano <- function (df, title = "Odds Ratio vs Variant p-value",
+							or_cutoff=1.05, pval_cutoff=0.001, fontsize=32) {
 
-	plot <- ggplot(data=df, aes(x=log2(Odds_Ratio), y=-log10(Pvalue))) +
-			geom_point() +
-			theme_minimal() +
-			geom_vline(xintercept=c(-ORcutoff, ORcutoff), col="red") +
-			geom_hline(yintercept=-log10(pvalcutoff), col="red") +
-			ggtitle(title) +
-			theme(
-				plot.title=element_text(size=fontsize*1.2, hjust = 0.5),
-				plot.subtitle=element_text(hjust = 0.5),
-   				axis.title = element_text(size = fontsize),
-				legend.text = element_text(size = fontsize),
-				axis.text = element_text(size = fontsize*0.8),
-				legend.title=element_blank()
+	df <- parse_column_names(df)
+	plot <- ggplot2::ggplot(data=df, ggplot2::aes(x=log2(10**beta_number),
+													y=-log10(p_value))) +
+			ggplot2::geom_point() +
+			ggplot2::theme_minimal() +
+			ggplot2::geom_vline(xintercept=c(-log2(or_cutoff),
+												log2(or_cutoff)),
+								col="red") +
+			ggplot2::geom_hline(yintercept=-log10(pval_cutoff), col="red") +
+			ggplot2::ggtitle(title) +
+			ggplot2::theme(
+				plot.title = ggplot2::element_text(size=fontsize*1.2, hjust = 0.5),
+				plot.subtitle = ggplot2::element_text(hjust = 0.5),
+   				axis.title = ggplot2::element_text(size = fontsize),
+				legend.text = ggplot2::element_text(size = fontsize),
+				axis.text = ggplot2::element_text(size = fontsize*0.8),
+				legend.title = ggplot2::element_blank()
 				)
-
-	print(plot)
-	invisible(dev.off())
+	return(plot)
 }
 
-tableForChisq <- function(sigset,randset,fullset,testGroup,fullGroup,fixedTotal=FALSE) {
+.make_chisq_table <- function(df, col1, col1_val1, col1_val2,
+								col2, col2_val2, col2_val2) {
 
-	sigData <- length(unique(sigset$RS))
-	randData <- length(unique(randset$RS))
+	set1 <- .subset_df(df, col1, col1_val1)
+	set1_1 <- .subset_df(set1, col2, col2_val1)
+	set1_2 <- .subset_df(set1, col2, col2_val2)
+	set2 <- .subset_df(df, col1, col1_val2)
+	set2_1 <- .subset_df(set2, col2, col2_val1)
+	set2_2 <- .subset_df(set2, col2, col2_val2)
 
-	if(!fixedTotal){
-		totalData <- length(fullset$RS) # Some NAs exist in this list, but should not be eliminated as
-								# they correspond to real, although currently unidentified, SNPs. 
-	} else {
-		totalData <- as.numeric(fullset)
-	}
+	N_1 <- nrow(set1)
+	N_2 <- nrow(set2)
+	N_total <- nrow(fullset)
 
-	df1 <- data.frame("first"=c(sigData,randData))
-	df2 <- data.frame("second"=rep(totalData,2))
-	df2 <- df2 - df1
-	res <- cbind(df1,df2)
+	res <- data.frame(N_1, N_2)
+	res[2, ] <- res[2, ] - res[1, ]
 
-	colnames(res) <- c(testGroup,paste0("non_",testGroup))
-	rownames(res) <- c(paste("Significant",fullGroup), paste("Random",fullGroup))
+	colnames(res) <- c(val1, val2)
+	rownames(res) <- c(paste0("Not_",val1), paste0("Not_",val2))
 	return(res)
 }
 
-Chi2 <- function (Data) {
+.subset_df <- function (df, col, val) {
+	expr <- paste0(".*", val, ".*")
+	res <- df[grep(expr, df[, col], ignore.case = TRUE), ]
+	return(res)
+}
+
+#' Perform chi squared test on dataframe
+#' 
+#' `test_chi2` plots log2 of variant odds ratio versus log10 of p-value
+#' for a given DAGGER-parsed dataframe containing variant data.
+#' @param df A DAGGER-parsed data frame containing p-value and beta number
+#' columns.
+#' @param title Title of the resulting plot.
+#' @param or_cutoff Value from which statistical significance line position for
+#' odds ratio (X axis) will be calculated. Symmetrical line will be drawn in
+#' opposite value in X-axis (log2 of odds-ratio distribution is symmetrical).
+#' @param pval_cutoff Value from which statistical significance line position
+#' for p-value (Y axis) will be calculated.
+#' @returns A vulcano plot of the provided distributions.
+#' @examples
+#' GWAS_example <- head(GWAS_demo)
+#' colnames(GWAS_example)[1:2] <- c("rs_id", "p_value")
+#' VolcanoPlot(GWAS_example)
+#' @export
+
+test_chi2 <- function (df, col, val1, val2) {
+
+	chisq_table <- .make_chisq_table(df, col, val1, val2)
 
 	Chisq <- chisq.test(Data)
 	n <- sum(Data)
@@ -63,9 +106,9 @@ Chi2 <- function (Data) {
 # if any chromosomes are missing in the dataset, empty rows will be created
 # for them.
 
-tableGroups <- function(set, attr) { 
+tableGroups <- function(set, col) { 
 
-	table <- table(set[,attr])
+	table <- table(set[,col])
 	df <- data.frame(rep(0, tail(names(table), 1)))
 
 	for (n in 1:length(table)) {
@@ -76,11 +119,11 @@ tableGroups <- function(set, attr) {
 	return(df)
 }
 
-groupSigVsRandBarplot <- function(set1, set2, attr, title, fontsize = 28) {
+groupSigVsRandBarplot <- function(set1, set2, col, title, fontsize = 28) {
 
-	SigData <- tableGroups(set=set1, attr=attr)
+	SigData <- tableGroups(set=set1, col=col)
 	SigData <- cbind(SigData,rep("Significant",length(SigData)))
-	RandData <- tableGroups(set=set2, attr=attr)
+	RandData <- tableGroups(set=set2, col=col)
 	RandData <- cbind(RandData,rep("Random",length(RandData)))
 	colnames(SigData) = colnames(RandData) <- c("Chr","Frequency","Group")
 
