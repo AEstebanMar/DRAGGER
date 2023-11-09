@@ -43,7 +43,7 @@ plot_volcano <- function (df, title = "Odds Ratio vs Variant p-value",
 }
 
 .make_chisq_table <- function(df, col1, col1_val1, col1_val2,
-								col2, col2_val2, col2_val2) {
+								col2, col2_val1, col2_val2) {
 
 	set1 <- .subset_df(df, col1, col1_val1)
 	set1_1 <- .subset_df(set1, col2, col2_val1)
