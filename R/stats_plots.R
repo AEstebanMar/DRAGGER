@@ -45,28 +45,27 @@ plot_volcano <- function (df, title = "Odds Ratio vs Variant p-value",
 .make_chisq_table <- function(df, col1, col1_val1, col1_val2,
 								col2, col2_val1, col2_val2) {
 
-	set1 <- .subset_df(df, col1, col1_val1)
-	set1_1 <- .subset_df(set1, col2, col2_val1)
-	set1_2 <- .subset_df(set1, col2, col2_val2)
-	set2 <- .subset_df(df, col1, col1_val2)
-	set2_1 <- .subset_df(set2, col2, col2_val1)
-	set2_2 <- .subset_df(set2, col2, col2_val2)
+	subs_list <- .get_subsets(df, col1, col1_val1, col1_val2)
+	subs_list <- lapply(subs_list,
+						function(x) .get_subsets(x, col2, col2_val1, col2_val2))
 
-	N_1 <- nrow(set1)
-	N_2 <- nrow(set2)
-	N_total <- nrow(fullset)
-
-	res <- data.frame(N_1, N_2)
-	res[2, ] <- res[2, ] - res[1, ]
-
-	colnames(res) <- c(val1, val2)
-	rownames(res) <- c(paste0("Not_",val1), paste0("Not_",val2))
+	total_rows <- lapply(unlist(subs_list, recursive=FALSE), nrow)
+	res <- data.frame(c(total_rows[[1]], total_rows[[2]]),
+						c(total_rows[[3]], total_rows[[4]]))
+	colnames(res) <- c(paste(col2, col2_val1, sep = "_"),
+						paste(col2, col2_val2, sep = "_"))
+	rownames(res) <- c(paste(col1, col1_val1, sep = "_"),
+						paste(col1, col1_val2, sep = "_"))
 	return(res)
 }
 
-.subset_df <- function (df, col, val) {
-	expr <- paste0(".*", val, ".*")
-	res <- df[grep(expr, df[, col], ignore.case = TRUE), ]
+.get_subsets <- function (df, col, val_1, val_2) {
+	expr_1 <- paste0(".*", val_1, ".*")
+	expr_2 <- paste0(".*", val_2, ".*")
+	subset_1 <- df[grep(expr_1, df[, col], ignore.case = TRUE), ]
+	subset_2 <- df[grep(expr_2, df[, col], ignore.case = TRUE), ]
+	res <- list(subset_1, subset_2)
+	names(res) <- c(val_1, val_2)
 	return(res)
 }
 
@@ -89,16 +88,18 @@ plot_volcano <- function (df, title = "Odds Ratio vs Variant p-value",
 #' VolcanoPlot(GWAS_example)
 #' @export
 
-test_chi2 <- function (df, col, val1, val2) {
-
-	chisq_table <- .make_chisq_table(df, col, val1, val2)
-
-	Chisq <- chisq.test(Data)
-	n <- sum(Data)
-	gl <- min(dim(Data) - 1)
-
-	VCramer <- sqrt((Chisq$statistic)/(n * gl)) # Effect size code adapted from https://stats.stackexchange.com/questions/427864/how-to-calculate-an-effect-size-for-chi-square-in-r
-	result <- data.frame("X2" = Chisq$statistic, "p-value" = Chisq$p.value, "Cramer_V" = VCramer, row.names = NULL)
+test_chi2 <- function (df, col1, col1_val1, col1_val2,
+							col2, col2_val1, col2_val2) {
+	chisq_table <- .make_chisq_table(df, col1, col1_val1, col1_val2,
+										col2, col2_val1, col2_val2)
+	n <- sum(chisq_table)
+	degr_freed <- min(dim(chisq_table) - 1)
+	
+	chisq_results <- chisq.test(chisq_table)
+	Cramer_V <- sqrt((chisq_results$statistic)/ (n * degr_freed))
+	result <- data.frame("X2" = chisq_results$statistic,
+						"p-value" = chisq_results$p.value,
+						"Cramer_V" = Cramer_V, row.names = NULL)
 	return(result)
 }
 
