@@ -11,7 +11,7 @@
 #' opposite value in X-axis (log2 of odds-ratio distribution is symmetrical).
 #' @param pval_cutoff Value from which statistical significance line position
 #' for p-value (Y axis) will be calculated.
-#' @param fontize Base font size for text. Titles will be bigger, axes
+#' @param fontsize Base font size for text. Titles will be bigger, axes
 #' will be lower.
 #' @returns A vulcano plot of the provided distributions.
 #' @examples
@@ -58,7 +58,6 @@ plot_volcano <- function (df, title = "Odds Ratio vs Variant p-value",
 #'									relevance=c(rep('important', 2),
 #'											rep('not_important', 8)))
 #' barplot_by_groups(barplot_example_df, "rs_id", "relevance")
-#' test_chi2(chisq_example, "Tissue", "brain", "stomach", "candidate", T, F)
 #' @export
 
 barplot_by_groups <- function(df, value = "rs_id", group.by) {
