@@ -100,6 +100,7 @@ test_chi2 <- function (df, col1, col1_val1, col1_val2,
 	result <- data.frame("X2" = chisq_results$statistic,
 						"p-value" = chisq_results$p.value,
 						"Cramer_V" = Cramer_V, row.names = NULL)
+	result <- list(table=chisq_table, chi2=result)
 	return(result)
 }
 
