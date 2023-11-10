@@ -12,8 +12,8 @@
 #' dupes_example <- data.frame(
 #'						rs_id = c("rs2710888", "rs182532", "rs9660106"),
 #' 						pvalue = c(2e-58, 1e-17, 2e-12),
-#' 						beta_number = GWAS_demo$beta_number[c(1, 3, 5)] + 0.002
-#'						)
+#' 						beta_number = GWAS_demo$beta_number[c(1, 3, 5)]
+#'														+ 0.002)
 #' dupes_example <- rbind(head(GWAS_demo), dupes_example)
 #' dupes_example <- remove_duplicate_rs(dupes_example)
 #' @export
@@ -43,6 +43,7 @@ remove_duplicate_rs <- function(df) {
 #' `filter_significance` filters out all rows in a data frame below input
 #' p-value (default 0.05).
 #' @param df A DAGGER-parsed data frame.
+#' @param value P-value cutoff.
 #' @returns A subset of the original data frame with all rows passing filter.
 #' @examples
 #' example_df <- head(GWAS_demo)
