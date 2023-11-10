@@ -26,13 +26,13 @@ plot_volcano <- function (df, title = "Odds Ratio vs Variant p-value",
 													y=-log10(p_value))) +
 			ggplot2::geom_point() +
 			ggplot2::theme_minimal() +
-			ggplot2::geom_vline(xintercept=c(-log2(or_cutoff),
-												log2(or_cutoff)),
+			ggplot2::geom_vline(xintercept=c(-log2(or_cutoff), log2(or_cutoff)),
 								col="red") +
 			ggplot2::geom_hline(yintercept=-log10(pval_cutoff), col="red") +
 			ggplot2::ggtitle(title) +
 			ggplot2::theme(
-				plot.title = ggplot2::element_text(size=fontsize*1.2, hjust = 0.5),
+				plot.title = ggplot2::element_text(size=fontsize*1.2,
+													hjust = 0.5),
 				plot.subtitle = ggplot2::element_text(hjust = 0.5),
    				axis.title = ggplot2::element_text(size = fontsize),
 				legend.text = ggplot2::element_text(size = fontsize),
@@ -105,55 +105,20 @@ test_chi2 <- function (df, col1, col1_val1, col1_val2,
 	return(result)
 }
 
-# This function builds a table and checks for missing categories. For example,
-# if any chromosomes are missing in the dataset, empty rows will be created
-# for them.
-
-tableGroups <- function(set, col) { 
-
-	table <- table(set[,col])
-	df <- data.frame(rep(0, tail(names(table), 1)))
-
-	for (n in 1:length(table)) {
-		df[names(table[n]),] <- table[n]
-	}
-
-	df <- cbind(seq(1:nrow(df)), df)
-	return(df)
-}
-
-groupSigVsRandBarplot <- function(set1, set2, col, title, fontsize = 28) {
-
-	SigData <- tableGroups(set=set1, col=col)
-	SigData <- cbind(SigData,rep("Significant",length(SigData)))
-	RandData <- tableGroups(set=set2, col=col)
-	RandData <- cbind(RandData,rep("Random",length(RandData)))
-	colnames(SigData) = colnames(RandData) <- c("Chr","Frequency","Group")
-
-	df <- rbind(SigData, RandData)
-	df$Frequency = as.numeric(df$Frequency)
-	df$Chr = as.numeric(df$Chr)
-
-	tiff(file= paste0(title,".tiff"), units="cm",
-		width=40, height=30, res=300)
-
-	plot <- ggplot(df, aes(x=Chr, y=Frequency, fill=Group)) + 
-			scale_x_continuous(breaks = unique(df$Chr)) +
-   			geom_bar(position="dodge", stat="identity") +
-   			scale_fill_manual(values = c("#000000","#7da1c4")) +
-   			ggtitle(title) + xlab("Chromosome") +
-   			theme(plot.title = element_text(hjust = 0.5)) +
-   			scale_y_continuous(labels = function(x) format(x, scientific = TRUE)) +
-   			theme(
-   				axis.title = element_text(size = fontsize),
-				legend.text = element_text(size = fontsize),
-				plot.title = element_text(size = fontsize*1.2),
-				axis.text = element_text(size = fontsize*0.8),
-				legend.title = element_blank()
-				)
-
-   	print(plot)
-	invisible(dev.off())
+barplot_by_groups <- function(df, value = "rs_id", group.by) {
+	subset <- df[, c(value, group.by)]
+	colnames(subset) <- c("value", "group")
+	subset_table <- plyr::count(subset, "group")
+	plot <- ggplot2::ggplot(subset_table, ggplot2::aes(x = group, y = freq)) +
+			ggplot2::geom_bar(stat = "identity") +
+			ggplot2::scale_fill_grey() +
+   			ggplot2::ggtitle(paste("RS count by", group.by)) +
+   			ggplot2::xlab(group.by) +
+   			ggplot2::ylab('count') +
+   			ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
+   							axis.text.x = ggplot2::element_text(angle = 90,
+   														vjust = 0.5, hjust=1))
+	return(plot)
 }
 
 # message('============================================================================================\nStarting statistical analyses...\n\nLoading input data...')
