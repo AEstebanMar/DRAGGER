@@ -71,21 +71,22 @@ plot_volcano <- function (df, title = "Odds Ratio vs Variant p-value",
 
 #' Perform chi squared test on dataframe
 #' 
-#' `test_chi2` plots log2 of variant odds ratio versus log10 of p-value
-#' for a given DAGGER-parsed dataframe containing variant data.
-#' @param df A DAGGER-parsed data frame containing p-value and beta number
-#' columns.
-#' @param title Title of the resulting plot.
-#' @param or_cutoff Value from which statistical significance line position for
-#' odds ratio (X axis) will be calculated. Symmetrical line will be drawn in
-#' opposite value in X-axis (log2 of odds-ratio distribution is symmetrical).
-#' @param pval_cutoff Value from which statistical significance line position
-#' for p-value (Y axis) will be calculated.
-#' @returns A vulcano plot of the provided distributions.
+#' `test_chi2` takes a data frame, two column names, and two values for each
+#' column and formats the data into a chi2-test compatible format. Then,
+#' it performs the chi2 statistical tests, including effect size (Cramer-V)
+#' calculation.
+#' @param df A data frame with at least two columns.
+#' @param col1,col2 Columns containing categories to test.
+#' @param col1_val1,col1_val2,col2_val1,col2_val2 Values of the first and
+#' second columns, respectively, to test.
+#' @returns A list containing the chi2 table and test results, with chi2 value,
+#' p-value and effect size (Cramer-V)
 #' @examples
-#' GWAS_example <- head(GWAS_demo)
-#' colnames(GWAS_example)[1:2] <- c("rs_id", "p_value")
-#' VolcanoPlot(GWAS_example)
+#' chisq_example <- data.frame(Tissue=c("Brain", "Brain", "Stomach"),
+#' 								candidate=c(TRUE, TRUE, FALSE))
+#' chisq_example <- chisq_example[rep(seq_len(nrow(chisq_example)),
+#'									each = 20), ]
+#' test_chi2(chisq_example, "Tissue", "brain", "stomach", "candidate", T, F)
 #' @export
 
 test_chi2 <- function (df, col1, col1_val1, col1_val2,
