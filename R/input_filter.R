@@ -46,9 +46,7 @@ remove_duplicate_rs <- function(df) {
 #' @returns A subset of the original data frame with all rows passing filter.
 #' @examples
 #' example_df <- parse_column_names(head(GWAS_demo))
-#' print(example_df)
 #' example_df <- filter_significance(example_df, 1e-20)
-#' print(example_df)
 #' @export
 
 filter_significance <- function(df, value = 0.05) {

@@ -10,9 +10,7 @@
 #' beneficial drug effect according to beta and slope columns.
 #' @examples
 #' example_df <- merge_gene_var_drug(GWAS_demo, GTEx, DGIdb)[10:20, ]
-#' print(example_df)
 #' example_df <- predict_effect(example_df)
-#' print(example_df)
 #' @section Logic behind the function:
 #' * Negative betas mean protection
 #' * Positive betas mean risk.
@@ -56,9 +54,7 @@ predict_effect <- function(gene_variant_df) {
 #' for drug repositioning.
 #' @examples
 #' example_df <- parse_column_names(head(GWAS_demo))
-#' print(example_df)
 #' example_df <- filter_significance(example_df, 1e-20)
-#' print(example_df)
 #' @export
 
 get_candidates <- function(DAGGER_df) {
