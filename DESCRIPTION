@@ -6,7 +6,6 @@ Authors@R: person("Alvaro", "Esteban-Martos", , "alvaroesteban@uma.com", role = 
 Description: Tools to perform drug repositioning analysis in R by merging
   gene-variant datasets and searching desired effect in a drug-gene interaction
   database.
-License: `use_mit_license()`
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
@@ -19,3 +18,4 @@ Depends:
 LazyData: true
 URL: https://github.com/AEstebanMar/DAGGER
 BugReports: https://github.com/AEstebanMar/DAGGER/issues
+License: MIT + file LICENSE

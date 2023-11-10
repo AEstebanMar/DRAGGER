@@ -12,8 +12,9 @@ A data frame with 1208024 rows and 9 columns:
 \item{Tissue}{Tissue where gene expression is altered}
 \item{gene_id}{Ensembl ID of affected gene}
 \item{gene_name}{GENCODE gene name}
-\item{variant_id}{Unique variant identifier. Contains chromosome, position,
-ref and alt alleles and genome build}
+\item{variant_information}{Unique variant identifier. Contains chromosome,
+position, ref and alt alleles and genome build. Named "variant_id" in
+original GTEx dataset'}
 \item{tss_distance}{Distance to gene transcription start site}
 \item{rs_id_dbSNP151_GRCh38p7}{Reference SNP ID}
 \item{slope}{Effect on gene expression}

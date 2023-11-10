@@ -15,22 +15,16 @@ only one of those columns exists in data frame, or rename those not wanted
 for analysis to anything not matching "p-val" or "pval".}
 }
 \value{
-A data frame of same dimensions as \code{df} with RS ID, gene ID,
-drug name and p-value (if found) named to DAGGER standards "rs_id",
-"gene_id", "drug_name", "pvalue". Functions further down the pipeline expect
-columns with said names. A warning will be given if multiple matches are
-found for any column other than p-value, which returns an error.
+Input dataframe with RS ID, gene ID, drug name and p-value
+(if found) renamed to DAGGER standards "rs_id", "gene_id", "drug_name",
+"pvalue". A warning will be given if multiple matches are found for any
+column other than p-value, which returns an error.
 }
 \description{
 \code{parse_column_names} takes an input data frame and renames set columns in
-order to make them recognisable by other DAGGER functions.
+order to simplify manipulation by other DAGGER functions.
 }
 \examples{
-data(GWAS_demo)
-print(GWAS_demo)
-parse_column_names(GWAS_demo)
-data(GTEx)
-GTEx_demo <- head(GTEx)
-print(GTEx_demo)
-parse_column_names(GTEx_demo)
+parse_column_names(head(GWAS_demo))
+parse_column_names(head(GTEx))
 }
