@@ -10,6 +10,7 @@ DGIdb <- read.table('interactions.tsv', header = TRUE,sep = "\t",
 									"interaction_types",
 									"drug_claim_name", "drug_concept_id",
 									"interaction_group_score", "PMIDs")]
+DGIdb$drug_claim_name <- enc2native(DGIdb$drug_claim_name)
 
 DGIdb[DGIdb==""] <- "Missing"
 
