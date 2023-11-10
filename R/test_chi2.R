@@ -44,7 +44,8 @@
 #' 								candidate=c(TRUE, TRUE, FALSE))
 #' chisq_example <- chisq_example[rep(seq_len(nrow(chisq_example)),
 #'									each = 20), ]
-#' test_chi2(chisq_example, "Tissue", "brain", "stomach", "candidate", T, F)
+#' test_chi2(chisq_example, "Tissue", "brain", "stomach",
+#'				"candidate", TRUE, FALSE)
 #' @export
 
 test_chi2 <- function (df, col1, col1_val1, col1_val2,
