@@ -8,6 +8,8 @@ filter_significance(df, value = 0.05)
 }
 \arguments{
 \item{df}{A DAGGER-parsed data frame.}
+
+\item{value}{P-value cutoff.}
 }
 \value{
 A subset of the original data frame with all rows passing filter.

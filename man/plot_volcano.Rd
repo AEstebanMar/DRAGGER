@@ -24,6 +24,9 @@ opposite value in X-axis (log2 of odds-ratio distribution is symmetrical).}
 
 \item{pval_cutoff}{Value from which statistical significance line position
 for p-value (Y axis) will be calculated.}
+
+\item{fontize}{Base font size for text. Titles will be bigger, axes
+will be lower.}
 }
 \value{
 A vulcano plot of the provided distributions.

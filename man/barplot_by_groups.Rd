@@ -24,7 +24,7 @@ groups.
 \examples{
 barplot_example_df <- data.frame(rs_id=rep('rs7357', 10),
 								relevance=c(rep('important', 2),
-											rep('not_important', 8)))
+										rep('not_important', 8)))
 barplot_by_groups(barplot_example_df, "rs_id", "relevance")
 test_chi2(chisq_example, "Tissue", "brain", "stomach", "candidate", T, F)
 }
