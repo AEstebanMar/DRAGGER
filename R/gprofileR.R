@@ -2,7 +2,7 @@
 
 enrich_variants <- function(rs_list) {
 	rs_vec <- as.vector(rs_list)[[1]]
-	res <- gprofiler2::gost(c(list))$result
+	res <- gprofiler2::gost(c(rs_list))$result
 	return(res)
 }
 
