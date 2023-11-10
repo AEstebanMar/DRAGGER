@@ -105,6 +105,23 @@ test_chi2 <- function (df, col1, col1_val1, col1_val2,
 	return(result)
 }
 
+#' Draw a bar plot of counts by group
+#' 
+#' `barplot_by_groups` takes a data frame, a value to count, and a category
+#' by which to group the counts. Default is counting number of variants across
+#' groups.
+#' @param df A data frame with at least two columns.
+#' @param value Value to count.
+#' @param group.by Column by which counts will be grouped.
+#' @returns A bar plot representing value counts across groups.
+#' @examples
+#' barplot_example_df <- data.frame(rs_id=rep('rs7357', 10),
+#'									relevance=c(rep('important', 2),
+#'												rep('not_important', 8)))
+#' barplot_by_groups(barplot_example_df, "rs_id", "relevance")
+#' test_chi2(chisq_example, "Tissue", "brain", "stomach", "candidate", T, F)
+#' @export
+
 barplot_by_groups <- function(df, value = "rs_id", group.by) {
 	subset <- df[, c(value, group.by)]
 	colnames(subset) <- c("value", "group")
