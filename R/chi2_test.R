@@ -32,6 +32,7 @@
 #' column and formats the data into a chi2-test compatible format. Then,
 #' it performs the chi2 statistical tests, including effect size (Cramer-V)
 #' calculation.
+#' @importFrom stats chisq.test
 #' @param df A data frame with at least two columns.
 #' @param col1,col2 Columns containing categories to test.
 #' @param col1_val1,col1_val2,col2_val1,col2_val2 Values of the first and
