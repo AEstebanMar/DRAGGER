@@ -4,10 +4,12 @@
 
 DGIdb <- read.table('interactions.tsv', header = TRUE,sep = "\t",
 					quote = "\"", dec = ".", fill = TRUE,
-					comment.char = "")[, c("gene_name", "entrez_id",
-								"interaction_claim_source", "interaction_types",
-								"drug_claim_name", "drug_concept_id",
-								"interaction_group_score", "PMIDs")]
+					comment.char = "")
+									[, c("gene_name", "entrez_id",
+									"interaction_claim_source",
+									"interaction_types",
+									"drug_claim_name", "drug_concept_id",
+									"interaction_group_score", "PMIDs")]
 
 DGIdb[DGIdb==""] <- "Missing"
 
