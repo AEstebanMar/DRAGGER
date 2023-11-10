@@ -29,5 +29,6 @@ chisq_example <- data.frame(Tissue=c("Brain", "Brain", "Stomach"),
 								candidate=c(TRUE, TRUE, FALSE))
 chisq_example <- chisq_example[rep(seq_len(nrow(chisq_example)),
 								each = 20), ]
-test_chi2(chisq_example, "Tissue", "brain", "stomach", "candidate", T, F)
+test_chi2(chisq_example, "Tissue", "brain", "stomach",
+			"candidate", TRUE, FALSE)
 }
