@@ -48,16 +48,26 @@ predict_effect <- function(gene_variant_df) {
 #' 
 #' `get_candidates` compares predicted beneficial drug effect with described
 #' gene-drug interaction. If they match, row is marked as potential candidate.
-#' @param DAGGER_df A complete DAGGER dataset, containing risk-gene-drug
-#' associations and predicted beneficial effect.
+#' @param df A data frame with at least two columns: interaction_types and
+#' prediction.
 #' @returns Input dataset with an additional column recommending candidates
 #' for drug repositioning.
 #' @examples
-#' example_df <- parse_column_names(head(GWAS_demo))
-#' example_df <- filter_significance(example_df, 1e-20)
+#' repositioning_example <- data.frame(interaction_types = c("Missing",
+#' 								"inhibitor", "agonist", "activator",
+#'								"positive modulator", "partial agonist",
+#' 								"inducer", "allosteric modulator", "Missing",
+#' 								"activator", "inhibitor", "blocker",
+#' 								"antagonist", "inverse agonist",
+#' 								"negative modulator",
+#'								"antisense oligonucleotide", "suppressor",
+#'								"inhibitory allosteric modulator"),
+#'								prediction = c(rep("activator", 8),
+#'									rep("inhibitor", 10)))
+#' get_candidates(repositioning_example)
 #' @export
 
-get_candidates <- function(DAGGER_df) {
+get_candidates <- function(df) {
 	message("Producing list of candidates for repositioning")
 	dict <- list(
 		activator = c("agonist", "activator", "positive modulator",
@@ -66,8 +76,8 @@ get_candidates <- function(DAGGER_df) {
 			"negative modulator", "antisense oligonucleotide", "suppressor",
 			"inhibitory allosteric modulator")
 		)
-	candidates <- .is.candidate(DAGGER_df, dict)
-	DAGGER_df$candidate <- FALSE
-	DAGGER_df$candidate[candidates] <- TRUE
+	candidates <- .is.candidate(df, dict)
+	df$candidate <- FALSE
+	df$candidate[candidates] <- TRUE
 	return(DAGGER_df)
 }
