@@ -45,7 +45,8 @@ remove_duplicate_rs <- function(df) {
 #' @param df A DAGGER-parsed data frame.
 #' @returns A subset of the original data frame with all rows passing filter.
 #' @examples
-#' example_df <- parse_column_names(head(GWAS_demo))
+#' example_df <- head(GWAS_demo)
+#' colnames(example_df)[2] <- "p_value"
 #' example_df <- filter_significance(example_df, 1e-20)
 #' @export
 
@@ -56,6 +57,6 @@ filter_significance <- function(df, value = 0.05) {
 			first. Returning it as-is")
 		return(df)
 	}
-	res <- df[as.integer(df$p_value) <= value, ]
+	res <- df[as.numeric(df$p_value) <= value, ]
 	return(res)
 }
