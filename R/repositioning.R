@@ -56,10 +56,10 @@ predict_effect <- function(gene_variant_df) {
 #' repositioning_example <- data.frame(interaction_types = c("Missing",
 #' 								"inhibitor", "agonist", "activator",
 #'								"positive modulator", "partial agonist",
-#' 								"inducer", "allosteric modulator", "Missing",
-#' 								"activator", "inhibitor", "blocker",
-#' 								"antagonist", "inverse agonist",
-#' 								"negative modulator",
+#' 								"inducer", "allosteric modulator",
+#'								"Missing", "activator", "inhibitor",
+#'								"blocker", "antagonist",
+#'								"inverse agonist", "negative modulator",
 #'								"antisense oligonucleotide", "suppressor",
 #'								"inhibitory allosteric modulator"),
 #'								prediction = c(rep("activator", 8),
@@ -79,5 +79,5 @@ get_candidates <- function(df) {
 	candidates <- .is.candidate(df, dict)
 	df$candidate <- FALSE
 	df$candidate[candidates] <- TRUE
-	return(DAGGER_df)
+	return(df)
 }
