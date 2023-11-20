@@ -28,7 +28,8 @@ merge_gene_var_drug <- function(GWAS, GTEx, DGIdb) {
 
 	message('Merging genes and variants')
 	gene_variants <- merge(GWAS, GTEx, by = "rs_id")
-	colnames(gene_variants)[c(2, 10)] <- c("p_val_variant", "p_val_nominal")
+	p_val_columns <- grep("p_value", colnames(gene_variants))
+	colnames(gene_variants)[p_val_columns] <- c("p_val_variant", "p_val_nominal")
 
 	message('Merging with drug database')
 	res <- merge(gene_variants, DGIdb, by = "gene_symbol")
