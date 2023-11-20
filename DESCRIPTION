@@ -11,7 +11,8 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat (>= 3.0.0)
 VignetteBuilder: knitr
 Depends: 
     R (>= 2.10)
@@ -23,3 +24,4 @@ LazyDataCompression: xz
 URL: https://github.com/AEstebanMar/DAGGER
 BugReports: https://github.com/AEstebanMar/DAGGER/issues
 License: MIT + file LICENSE
+Config/testthat/edition: 3
