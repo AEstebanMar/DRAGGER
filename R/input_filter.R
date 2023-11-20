@@ -55,9 +55,9 @@ remove_duplicate_rs <- function(df) {
 
 filter_significance <- function(df, value = 0.05) {
 	if(is.null(df$p_value)) {
-		message("No statistical significance column found in input or improperly
+		warning("No statistical significance column found in input or improperly
 			parsed. You might want to run it through DAGGER::parse_column_names
-			first. Returning it as-is")
+			first. Returning it as-is", immediate. = TRUE)
 		return(df)
 	}
 	res <- df[as.numeric(df$p_value) <= value, ]
