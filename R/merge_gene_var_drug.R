@@ -39,7 +39,11 @@ merge_gene_var_drug <- function(GWAS, GTEx, DGIdb) {
 
 	message('Merging with drug database')
 	res <- merge(gene_variants, DGIdb, by = "gene_symbol")
-	res$beta_number <- as.numeric(res$beta_number)
-	res$slope <- as.numeric(res$slope)
+	if (!is.null(res$beta_number)) {
+		res$beta_number <- as.numeric(res$beta_number)
+	}
+	if (!is.null(res$slope)) {
+		res$slope <- as.numeric(res$slope)
+	}
 	return(res)
 }
