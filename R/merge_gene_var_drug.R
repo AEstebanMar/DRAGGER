@@ -21,16 +21,29 @@ merge_gene_var_drug <- function(GWAS, GTEx, DGIdb) {
 	GWAS <- remove_duplicate_rs(
 				filter_significance(parse_column_names(GWAS), 0.05)
 				)
+	GWAS_p_val_column <- grep("p_value", colnames(GWAS))
+	if (length(GWAS_p_val_column) > 0) {
+		colnames(GWAS)[GWAS_p_val_column] <- "p_val_variant"
+	}
 	message('\n\nParsing expression data\n\n')
 	GTEx <- filter_significance(parse_column_names(GTEx), 0.05)
+	GTEx_p_val_column <- grep("p_value", colnames(GTEx))
+	if (length(GTEx_p_val_column) > 0) {
+		colnames(GTEx)[GTEx_p_val_column] <- "p_val_nominal"
+	}
 	message('\n\nParsing drug-gene data\n\n')
 	DGIdb <- parse_column_names(DGIdb)
 
 	message('Merging genes and variants')
 	gene_variants <- merge(GWAS, GTEx, by = "rs_id")
-	colnames(gene_variants)[c(2, 10)] <- c("p_val_variant", "p_val_nominal")
 
 	message('Merging with drug database')
 	res <- merge(gene_variants, DGIdb, by = "gene_symbol")
+	if (!is.null(res$beta_number)) {
+		res$beta_number <- as.numeric(res$beta_number)
+	}
+	if (!is.null(res$slope)) {
+		res$slope <- as.numeric(res$slope)
+	}
 	return(res)
 }

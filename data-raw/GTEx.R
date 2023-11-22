@@ -9,6 +9,7 @@ GTEx <- read.table ("Merged_eQTL.txt", header=TRUE,
 					"gene_name", "strand", "variant_id", "tss_distance",
 					"rs_id_dbSNP151_GRCh38p7","pval_nominal","slope")]
 GTEx$pval_nominal <- as.numeric(GTEx$pval_nominal)
+GTEx$slope <- as.numeric(GTEx$slope)
 colnames(GTEx)[4] <- "variant_information"
 
 

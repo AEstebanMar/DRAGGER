@@ -1,6 +1,6 @@
 Package: DAGGER
 Title: Drug repositioning by Analysis of GWAS and Gene Expression in R
-Version: 1.0
+Version: 1.1
 Authors@R: person("Alvaro", "Esteban-Martos", , "alvaroesteban@uma.com", role = c("aut", "cre"),
   comment = c(ORCID = "ORCID: 0000-0001-9791-7779"))
 Description: Tools to perform drug repositioning analysis in R by merging
@@ -11,10 +11,11 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat (>= 3.0.0)
 VignetteBuilder: knitr
 Depends: 
-    R (>= 2.10)
+    R (>= 4.3.0)
 Imports:
     ggplot2,
     plyr
@@ -23,3 +24,4 @@ LazyDataCompression: xz
 URL: https://github.com/AEstebanMar/DAGGER
 BugReports: https://github.com/AEstebanMar/DAGGER/issues
 License: MIT + file LICENSE
+Config/testthat/edition: 3
