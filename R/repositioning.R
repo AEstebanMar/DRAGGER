@@ -27,12 +27,12 @@
 predict_effect <- function(gene_variant_df) {
 
 	message('Checking for non-numeric values')
-	is_beta_number <- sapply(gene_variant_df$beta_number, is.numeric)
+	is_beta_number <- sapply(gene_variant_df$beta_value, is.numeric)
 	is_slope_number <- sapply(gene_variant_df$slope, is.numeric)
 	if(any(!is_beta_number)) {
 		warning('Non-numeric values found in beta number column.
 				 Coercing to NA', immediate. = TRUE)
-		gene_variant_df$beta_number[!is_beta_number] <- NA
+		gene_variant_df$beta_value[!is_beta_number] <- NA
 	}
 	if(any(!is_slope_number)) {
 		warning('Non-numeric values found in slope column.
@@ -40,7 +40,7 @@ predict_effect <- function(gene_variant_df) {
 		gene_variant_df$slope[!is_slope_number] <- NA
 	}
 	message('Predicting beneficial drug effect')
-	betas <- gene_variant_df$beta_number < 0
+	betas <- gene_variant_df$beta_value < 0
 	slopes <- gene_variant_df$slope > 0
 	prediction <- betas == slopes
 	prediction[prediction == TRUE] <- "activator"
