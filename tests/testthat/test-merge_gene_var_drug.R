@@ -28,3 +28,44 @@ test_that("merge_gene_var_drug returns nothing if no matches are found", {
   expect_equal(merge_gene_var_drug(lonely_GWAS, lonely_GTEx, lonely_DGIdb),
                expected_df)
   })
+
+test_that("merge_gene_var_drug with missing GWAS p-value", {
+  test_GWAS <- data.frame(rs_id = "rs01",
+                          beta_value = 1)
+  test_GTEx <- data.frame(rs = "rs01",
+                          gene_symbol = "gene01",
+                          p_value = 1e-08,
+                          slope = 1)
+  test_DGIdb <- data.frame(drug_name = "drug01",
+                           interaction_types = "activator",
+                           gene_symbol = "gene01")
+  expect_no_error(suppressWarnings(merge_gene_var_drug(test_GWAS,
+                                                      test_GTEx, test_DGIdb)))
+  })
+
+test_that("merge_gene_var_drug with missing GTEx p-value", {
+  test_GWAS <- data.frame(rs_id = "rs01",
+                          p_value = 1e-08,
+                          beta_value = 1)
+  test_GTEx <- data.frame(rs = "rs01",
+                          gene_symbol = "gene01",
+                          slope = 1)
+  test_DGIdb <- data.frame(drug_name = "drug01",
+                           interaction_types = "activator",
+                           gene_symbol = "gene01")
+  expect_no_error(suppressWarnings(merge_gene_var_drug(test_GWAS,
+                                                      test_GTEx, test_DGIdb)))
+  })
+
+test_that("merge_gene_var_drug with no p-values", {
+    test_GWAS <- data.frame(rs_id = "rs01",
+                          beta_value = 1)
+  test_GTEx <- data.frame(rs = "rs01",
+                          gene_symbol = "gene01",
+                          slope = 1)
+  test_DGIdb <- data.frame(drug_name = "drug01",
+                           interaction_types = "activator",
+                           gene_symbol = "gene01")
+  expect_no_error(suppressWarnings(merge_gene_var_drug(test_GWAS,
+                                                      test_GTEx, test_DGIdb)))
+  })
