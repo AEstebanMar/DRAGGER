@@ -25,10 +25,9 @@
 #' @export
 
 predict_effect <- function(gene_variant_df) {
-
 	message('Predicting beneficial drug effect')
-	betas <- gene_variant_df$beta_number < 0
-	slopes <- gene_variant_df$slope > 0
+	betas <- as.numeric(gene_variant_df$beta_number) < 0
+	slopes <- as.numeric(gene_variant_df$slope) > 0
 	prediction <- betas == slopes
 	prediction[prediction == TRUE] <- "activator"
 	prediction[prediction == FALSE] <- "inhibitor"
