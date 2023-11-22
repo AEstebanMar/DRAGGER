@@ -1,6 +1,6 @@
 Package: DAGGER
 Title: Drug repositioning by Analysis of GWAS and Gene Expression in R
-Version: 1.0
+Version: 1.1
 Authors@R: person("Alvaro", "Esteban-Martos", , "alvaroesteban@uma.com", role = c("aut", "cre"),
   comment = c(ORCID = "ORCID: 0000-0001-9791-7779"))
 Description: Tools to perform drug repositioning analysis in R by merging
