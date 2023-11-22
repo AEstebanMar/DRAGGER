@@ -5,13 +5,13 @@ test_that("predict_effect works as intended", {
   expect_equal(res$prediction, expected_prediction)
 })
 
-test_that("predict_effect returns NA for unexpected values", {
+test_that("predict_effect coerces non-numeric values to numeric", {
   beta_test_df <- data.frame(beta_number = c(0, NA, NaN, "Mantella"),
                         slope = c(1, -1, 1, -1))
   slope_test_df <- data.frame(beta_number = c(-1, -1, 1, 1),
                               slope = c(0, NA, NaN, "Totem"))
-  expect_warning(predict_effect(beta_test_df), "beta number column")
-  expect_warning(predict_effect(slope_test_df), "slope column")
+  expect_warning(predict_effect(beta_test_df), "NAs introduced by coercion")
+  expect_warning(predict_effect(slope_test_df), "NAs introduced by coercion")
 })
 
 test_that("get_candidates works as expected", {
