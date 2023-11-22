@@ -1,6 +1,6 @@
 test_that("DAGGER basic pipeline works", {
   test_GWAS <- data.frame(snp = c("rs01", "rs02", "rs03", "rs04"),
-                          beta_value = c(1, -1, 1, -1),
+                          beta_number = c(1, -1, 1, -1),
                           p_value = rep(2e-7, 4))
   test_GTEx <- data.frame(rs = c("rs01", "rs02", "rs03", "rs04"),
                           gene_symbol = c("gene01", "gene02", "gene03", "gene04"),
@@ -15,7 +15,7 @@ test_that("DAGGER basic pipeline works", {
   expected_results <- data.frame(gene_symbol = c("gene01", "gene02",
                                                  "gene03", "gene04"),
                                  rs_id = c("rs01", "rs02", "rs03", "rs04"),
-                                 beta_value = c(1, -1, 1, -1),
+                                 beta_number = c(1, -1, 1, -1),
                                  p_val_variant = rep(2e-7, 4), 
                                  p_val_nominal = rep(1e-08, 4),
                                  slope = c(1, 1, -1, -1),
