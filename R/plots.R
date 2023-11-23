@@ -6,29 +6,39 @@
 #' @param df A DAGGER-parsed data frame containing p-value and beta number
 #' columns.
 #' @param title Title of the resulting plot.
-#' @param or_cutoff Value from which statistical significance line position for
-#' odds ratio (X axis) will be calculated. Symmetrical line will be drawn in
-#' opposite value in X-axis (log2 of odds-ratio distribution is symmetrical).
-#' @param pval_cutoff Value from which statistical significance line position
-#' for p-value (Y axis) will be calculated.
+#' @param or_cutoff Value from which statistical significance line position
+#' X axis (odds ratio) will be calculated. Symmetrical line will be
+#' drawn in opposite value in X-axis (log2 of distribution between 0 and 1,
+#' intended use for function, is symmetrical).
+#' @param pval_cutoff Value from which Y axis (statistical
+#' significance) line position will be calculated.
 #' @param fontsize Base font size for text. Titles will be bigger, axes
 #' will be lower.
-#' @returns A vulcano plot of the provided distributions.
+#' @returns A volcano plot of the provided distributions.
 #' @examples
 #' GWAS_example <- GWAS_demo
 #' colnames(GWAS_example) <- c("rs_id", "p_value", "beta_number")
 #' plot_volcano(GWAS_example)
 #' @export
 
-plot_volcano <- function (df, title = "Odds Ratio vs Variant p-value",
-							or_cutoff=1.05, pval_cutoff=0.001, fontsize=32) {
+plot_volcano <- function (df,
+						  title = "Odds Ratio vs Variant p-value",
+						  or_cutoff=1.05, pval_cutoff=0.001, fontsize=32)
+{
+	if(is.null(df$p_value)) {
+		p_val_col <- df$p_val_variant
+	} else {
+		p_val_col <- df$p_value
+	}
 
-	df <- parse_column_names(df)
-	plot <- ggplot2::ggplot(data=df, ggplot2::aes(x=log2(10**beta_number),
+	plot_df <- data.frame(cbind(df$beta_number, p_val_col))
+	colnames(plot_df) <- c("beta_number", "p_value")
+	plot <- ggplot2::ggplot(data=plot_df, ggplot2::aes(x=log2(10**beta_number),
 													y=-log10(p_value))) +
 			ggplot2::geom_point() +
 			ggplot2::theme_minimal() +
-			ggplot2::geom_vline(xintercept=c(-log2(or_cutoff), log2(or_cutoff)),
+			ggplot2::geom_vline(xintercept=c(-log2(or_cutoff),
+											 log2(or_cutoff)),
 								col="red") +
 			ggplot2::geom_hline(yintercept=-log10(pval_cutoff), col="red") +
 			ggplot2::ggtitle(title) +
