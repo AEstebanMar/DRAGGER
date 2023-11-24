@@ -19,7 +19,8 @@ knitr::opts_chunk$set(
 [![R-CMD-check](https://github.com/AEstebanMar/DAGGER/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/AEstebanMar/DAGGER/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-The goal of DAGGER is to ...
+DAGGER provides a toolkit for drug repositioning based on variant and gene-expression data. It includes a wrapper
+for a basic workflow, but a custom run can be set up with ease.
 
 ## Installation
 
@@ -32,25 +33,29 @@ devtools::install_github("AEstebanMar/DAGGER")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+DAGGER includes a demo dataset to showcase its main use case.
 
-```{r example}
+```{r First few lines of demo datasets}
 library(DAGGER)
-## basic example code
+head(GWAS_demo)
+head(GTEx)
+head(DGIdb)
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
+DAGGER includes a wrapper function, aptly named DAGGER, which executes the basic workflow.
+Workflow is described in detail in vignettes, along with customisation options.
 
-```{r cars}
-summary(cars)
+```{r DAGGER demonstration}
+library(DAGGER)
+demo <- DAGGER(GWAS_demo, GTEx, DGIdb)
+head(demo)
 ```
 
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this.
+Here is a preview of the type of plots included in DAGGER, also heavily customisable.
 
-You can also embed plots, for example:
-
-```{r pressure, echo = FALSE}
-plot(pressure)
+```{r Basic plot demonstration}
+library(DAGGER)
+demo <- suppressMessages(DAGGER(GWAS_demo, GTEx, DGIdb))
+plot_volcano(demo)
+barplot_by_groups(demo, "rs_id", "candidate")
 ```
-
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.
