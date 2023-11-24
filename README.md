@@ -166,10 +166,10 @@ demo <- suppressMessages(DAGGER(GWAS_demo, GTEx, DGIdb))
 plot_volcano(demo)
 ```
 
-<img src="man/figures/README-Basic plot demonstration-1.png" width="100%" />
+<img src="man/figures/README-Basic_plot_demonstration-1.png" width="100%" />
 
 ``` r
 barplot_by_groups(demo, "rs_id", "candidate")
 ```
 
-<img src="man/figures/README-Basic plot demonstration-2.png" width="100%" />
+<img src="man/figures/README-Basic_plot_demonstration-2.png" width="100%" />

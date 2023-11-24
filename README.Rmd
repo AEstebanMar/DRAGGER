@@ -45,7 +45,7 @@ head(DGIdb)
 DAGGER includes a wrapper function, aptly named DAGGER, which executes the basic workflow.
 Workflow is described in detail in vignettes, along with customisation options.
 
-```{r DAGGER demonstration}
+```{r DAGGER_demonstration}
 library(DAGGER)
 demo <- DAGGER(GWAS_demo, GTEx, DGIdb)
 head(demo)
@@ -53,7 +53,7 @@ head(demo)
 
 Here is a preview of the type of plots included in DAGGER, also heavily customisable.
 
-```{r Basic plot demonstration}
+```{r Basic_plot_demonstration}
 library(DAGGER)
 demo <- suppressMessages(DAGGER(GWAS_demo, GTEx, DGIdb))
 plot_volcano(demo)
