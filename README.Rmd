@@ -59,3 +59,13 @@ demo <- suppressMessages(DAGGER(GWAS_demo, GTEx, DGIdb))
 plot_volcano(demo)
 barplot_by_groups(demo, "rs_id", "candidate")
 ```
+A small expasion of base-R chisq test is also included, and can provide insight
+into DAGGER results. The following example compares the number of RS with
+a valid candidate by tissue, specifically brain vs stomach.
+
+```{r test_chi2}
+library(DAGGER)
+demo <- suppressMessages(DAGGER(GWAS_demo, GTEx, DGIdb))
+test_chi2(demo, "Tissue", "brain", "stomach",
+      "candidate", TRUE, FALSE)
+```

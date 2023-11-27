@@ -173,3 +173,22 @@ barplot_by_groups(demo, "rs_id", "candidate")
 ```
 
 <img src="man/figures/README-Basic_plot_demonstration-2.png" width="100%" />
+A small expasion of base-R chisq test is also included, and can provide
+insight into DAGGER results. The following example compares the number
+of RS with a valid candidate by tissue, specifically brain vs stomach.
+
+``` r
+library(DAGGER)
+demo <- suppressMessages(DAGGER(GWAS_demo, GTEx, DGIdb))
+test_chi2(demo, "Tissue", "brain", "stomach",
+      "candidate", TRUE, FALSE)
+#> Warning in chisq.test(chisq_table): Chi-squared approximation may be incorrect
+#> $table
+#>                candidate_TRUE candidate_FALSE
+#> Tissue_brain              309               0
+#> Tissue_stomach           1548              17
+#> 
+#> $chi2
+#>         X2   p.value   Cramer_V
+#> 1 2.286645 0.1304917 0.03493129
+```
