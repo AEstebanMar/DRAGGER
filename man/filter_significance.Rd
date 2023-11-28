@@ -7,7 +7,7 @@
 filter_significance(df, value = 0.05)
 }
 \arguments{
-\item{df}{A DAGGER-parsed data frame.}
+\item{df}{A data frame.}
 
 \item{value}{P-value cutoff.}
 }

@@ -22,7 +22,7 @@ the first occurrence. Dataframe is first sorted by p-value if column exists.
 \examples{
 dupes_example <- data.frame(
 					rs_id = c("rs2710888", "rs182532", "rs9660106"),
-						p_value = c(2e-58, 1e-17, 2e-12),
+						p_val_variant = c(2e-58, 1e-17, 2e-12),
 						beta_number = GWAS_demo$beta_number[c(1, 3, 5)]
 													+ 0.002)
 dupes_example_b <- head(GWAS_demo)

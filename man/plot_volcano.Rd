@@ -7,6 +7,7 @@
 plot_volcano(
   df,
   title = "Odds Ratio vs Variant p-value",
+  pval_col = "p_val_variant",
   or_cutoff = 1.05,
   pval_cutoff = 0.001,
   fontsize = 32
@@ -18,25 +19,28 @@ columns.}
 
 \item{title}{Title of the resulting plot.}
 
-\item{or_cutoff}{Value from which statistical significance line position for
-odds ratio (X axis) will be calculated. Symmetrical line will be drawn in
-opposite value in X-axis (log2 of odds-ratio distribution is symmetrical).}
+\item{pval_col}{Name of p-value column. Default is "p_val_variant".}
 
-\item{pval_cutoff}{Value from which statistical significance line position
-for p-value (Y axis) will be calculated.}
+\item{or_cutoff}{Value from which statistical significance line position
+X axis (odds ratio) will be calculated. Symmetrical line will be
+drawn in opposite value in X-axis (log2 of distribution between 0 and 1,
+intended use for function, is symmetrical).}
+
+\item{pval_cutoff}{Value from which Y axis (statistical
+significance) line position will be calculated.}
 
 \item{fontsize}{Base font size for text. Titles will be bigger, axes
 will be lower.}
 }
 \value{
-A vulcano plot of the provided distributions.
+A volcano plot of the provided distributions.
 }
 \description{
 \code{plot_volcano} plots log2 of variant odds ratio versus log10 of p-value
-for a given DAGGER-parsed dataframe containing variant data.
+for a given DAGGER-parsed data frame of variant data.
 }
 \examples{
 GWAS_example <- GWAS_demo
-colnames(GWAS_example) <- c("rs_id", "p_value", "beta_number")
+colnames(GWAS_example) <- c("rs_id", "p_val_variant", "beta_number")
 plot_volcano(GWAS_example)
 }

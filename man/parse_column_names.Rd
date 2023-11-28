@@ -4,7 +4,7 @@
 \alias{parse_column_names}
 \title{Parse column names to package standard}
 \usage{
-parse_column_names(df)
+parse_column_names(df, type)
 }
 \arguments{
 \item{df}{A data frame. Must contain at least one of the columns expected
@@ -13,6 +13,9 @@ any of this information, function will choose the one with most unique names.
 Can also recognise, but does not require, a p-value column. Please ensure
 only one of those columns exists in data frame, or rename those not wanted
 for analysis to anything not matching "p-val" or "pval".}
+
+\item{type}{Type of information contained in df. Renames p-value column
+differently for variant (type "GWAS") and expression (type "GTEx") data.}
 }
 \value{
 Input dataframe with RS ID, gene ID, drug name and p-value
@@ -25,6 +28,6 @@ column other than p-value, which returns an error.
 order to simplify manipulation by other DAGGER functions.
 }
 \examples{
-parse_column_names(head(GWAS_demo))
-parse_column_names(head(GTEx))
+parse_column_names(head(GWAS_demo), "GWAS")
+parse_column_names(head(GTEx), "GTEx")
 }
