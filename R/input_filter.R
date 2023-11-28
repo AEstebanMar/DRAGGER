@@ -11,7 +11,7 @@
 #' @examples
 #' dupes_example <- data.frame(
 #'						rs_id = c("rs2710888", "rs182532", "rs9660106"),
-#' 						p_value = c(2e-58, 1e-17, 2e-12),
+#' 						p_val_variant = c(2e-58, 1e-17, 2e-12),
 #' 						beta_number = GWAS_demo$beta_number[c(1, 3, 5)]
 #'														+ 0.002)
 #' dupes_example_b <- head(GWAS_demo)
@@ -22,9 +22,9 @@
 
 remove_duplicate_rs <- function(df) {
 
-	if(!is.null(df$p_value)) {
+	if(!is.null(df$p_val_variant)) {
 		message("Sorting input by statistical significance")
-		df <- df[order(df$p_value), ]
+		df <- df[order(df$p_val_variant), ]
 	}
 	if(is.null(df$rs_id)) {
 		stop('RS ID column not found or not properly parsed. Please run input
@@ -44,7 +44,7 @@ remove_duplicate_rs <- function(df) {
 #' 
 #' `filter_significance` filters out all rows in a data frame below input
 #' p-value (default 0.05).
-#' @param df A DAGGER-parsed data frame.
+#' @param df A data frame.
 #' @param value P-value cutoff.
 #' @returns A subset of the original data frame with all rows passing filter.
 #' @examples
@@ -54,12 +54,13 @@ remove_duplicate_rs <- function(df) {
 #' @export
 
 filter_significance <- function(df, value = 0.05) {
-	if(is.null(df$p_value)) {
-		warning("No statistical significance column found in input or improperly
-			parsed. You might want to run it through DAGGER::parse_column_names
-			first. Returning it as-is", immediate. = TRUE)
+	p_val_column <- grep("p.*val|^p$", colnames(df), ignore.case=TRUE)
+
+	if(length(df[, p_val_column]) == 0) {
+		warning("No statistical significance column found.
+				 Returning it as-is", immediate. = TRUE)
 		return(df)
 	}
-	res <- df[as.numeric(df$p_value) <= value, ]
+	res <- df[as.numeric(df[, p_val_column]) <= value, ]
 	return(res)
 }
