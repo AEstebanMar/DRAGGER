@@ -2,9 +2,10 @@
 #' Volcano plot of variant p-value versus odds ratio
 #' 
 #' `plot_volcano` plots log2 of variant odds ratio versus log10 of p-value
-#' for a given DAGGER-parsed dataframe containing variant data.
+#' for a given DAGGER-parsed data frame of variant data.
 #' @param df A DAGGER-parsed data frame containing p-value and beta number
 #' columns.
+#' @param pval_col Name of p-value column. Default is "p_val_variant".
 #' @param title Title of the resulting plot.
 #' @param or_cutoff Value from which statistical significance line position
 #' X axis (odds ratio) will be calculated. Symmetrical line will be
@@ -17,24 +18,19 @@
 #' @returns A volcano plot of the provided distributions.
 #' @examples
 #' GWAS_example <- GWAS_demo
-#' colnames(GWAS_example) <- c("rs_id", "p_value", "beta_number")
+#' colnames(GWAS_example) <- c("rs_id", "p_val_variant", "beta_number")
 #' plot_volcano(GWAS_example)
 #' @export
 
-plot_volcano <- function (df,
-						  title = "Odds Ratio vs Variant p-value",
-						  or_cutoff=1.05, pval_cutoff=0.001, fontsize=32)
-{
-	if(is.null(df$p_value)) {
-		p_val_col <- df$p_val_variant
-	} else {
-		p_val_col <- df$p_value
-	}
-
-	plot_df <- data.frame(cbind(df$beta_number, p_val_col))
+plot_volcano <- function(df,
+						 title = "Odds Ratio vs Variant p-value",
+						 pval_col = "p_val_variant",
+						 or_cutoff=1.05, pval_cutoff=0.001, fontsize=32) {
+	plot_df <- data.frame(cbind(df$beta_number, df[, pval_col]))
 	colnames(plot_df) <- c("beta_number", "p_value")
-	plot <- ggplot2::ggplot(data=plot_df, ggplot2::aes(x=log2(10**beta_number),
-													y=-log10(p_value))) +
+	plot <- ggplot2::ggplot(data=plot_df,
+						ggplot2::aes(x=log2(10**beta_number),
+									 y=-log10(p_value))) +
 			ggplot2::geom_point() +
 			ggplot2::theme_minimal() +
 			ggplot2::geom_vline(xintercept=c(-log2(or_cutoff),
