@@ -15,7 +15,7 @@
 #' 						beta_number = GWAS_demo$beta_number[c(1, 3, 5)]
 #'														+ 0.002)
 #' dupes_example_b <- head(GWAS_demo)
-#' colnames(dupes_example_b)[1:2] <- c("rs_id", "p_value")
+#' colnames(dupes_example_b)[1:2] <- c("rs_id", "p_val_variant")
 #' dupes_example <- rbind(dupes_example, dupes_example_b)
 #' dupes_example <- remove_duplicate_rs(dupes_example)
 #' @export
