@@ -27,12 +27,12 @@ test_that("filter_significance filters correctly by p-value", {
   expect_equal(filter_significance(test_df, 25), expected_df)
   })
 
-test_that("filter_significance fails if no p-value column exists", {
+test_that("filter_significance does nothing if no p-value column exists", {
   test_df <- data.frame(sorceress = "Nulfaga")
   expect_warning(filter_significance(test_df), "No statistical significance")
   })
 
 test_that("filter_significance fails if multiple p-value columns exist", {
   test_df <- data.frame(p_val_variant = 1, p_val_nominal = 2)
-  expect_warning(filter_significance(test_df), "Multiple p-value")
+  expect_error(filter_significance(test_df), "Multiple p-value")
   })
