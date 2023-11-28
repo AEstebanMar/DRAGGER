@@ -55,9 +55,10 @@ remove_duplicate_rs <- function(df) {
 
 filter_significance <- function(df, value = 0.05) {
 	p_val_column <- grep("p.*val|^p$", colnames(df), ignore.case=TRUE)
-	if(length(df[, p_val_column]) == 1) {
-		stop("Multiple p_value columns found in data frame.")
-	if(length(df[, p_val_column]) == 0) {
+	if(length(p_val_column) > 1) {
+		stop("Multiple p-value columns found in data frame.")
+	}
+	if(length(p_val_column) == 0) {
 		warning("No statistical significance column found.
 				 Returning it as-is", immediate. = TRUE)
 		return(df)
