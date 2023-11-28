@@ -34,7 +34,7 @@ test_that("merge_gene_var_drug with missing GWAS p-value", {
                           beta_value = 1)
   test_GTEx <- data.frame(rs = "rs01",
                           gene_symbol = "gene01",
-                          p_value = 1e-08,
+                          p_val_nominal = 1e-08,
                           slope = 1)
   test_DGIdb <- data.frame(drug_name = "drug01",
                            interaction_types = "activator",
@@ -45,7 +45,7 @@ test_that("merge_gene_var_drug with missing GWAS p-value", {
 
 test_that("merge_gene_var_drug with missing GTEx p-value", {
   test_GWAS <- data.frame(rs_id = "rs01",
-                          p_value = 1e-08,
+                          p_val_variant = 1e-08,
                           beta_value = 1)
   test_GTEx <- data.frame(rs = "rs01",
                           gene_symbol = "gene01",
