@@ -38,18 +38,25 @@
 #' Can also recognise, but does not require, a p-value column. Please ensure
 #' only one of those columns exists in data frame, or rename those not wanted
 #' for analysis to anything not matching "p-val" or "pval".
+#' @param type Type of information contained in df. Renames p-value column
+#' differently for variant (type "GWAS") and expression (type "GTEx") data.
 #' @returns Input dataframe with RS ID, gene ID, drug name and p-value
 #' (if found) renamed to DAGGER standards "rs_id", "gene_id", "drug_name",
 #' "pvalue". A warning will be given if multiple matches are found for any
 #' column other than p-value, which returns an error.
 #' @examples
-#' parse_column_names(head(GWAS_demo))
-#' parse_column_names(head(GTEx))
+#' parse_column_names(head(GWAS_demo), "GWAS")
+#' parse_column_names(head(GTEx), "GTEx")
 #' @export
 
-parse_column_names <- function(df) {
-	df <- .rename_column(df, "p.*val|^p$", "p_value", 1)
-	df <- .rename_column(df, "beta$", "beta_value", 1)
+parse_column_names <- function(df, type) {
+	message(paste0("Parsing data frame as ", type, " data"))
+	if (type == "GWAS") {
+		df <- .rename_column(df, "p.*val|^p$", "p_val_variant", 1)
+		df <- .rename_column(df, "beta$", "beta_value", 1)
+	} else if (type == "GTEx") {
+		df <- .rename_column(df, "p.*val|^p$", "p_val_nominal", 1)
+	}
 	df <- .rename_column(df, "rs|^snp.*$|^snp.*id|^variant.*id", "rs_id")
 	df <- .rename_column(df, "gene.*name|gene.*symbol", "gene_symbol")
 	df <- .rename_column(df, "drug.*name", "drug_name")
