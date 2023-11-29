@@ -18,7 +18,6 @@
 
 DRAGGER <- function(GWAS, GTEx, DGIdb) {
 	merged <- merge_gene_var_drug(GWAS = GWAS, GTEx = GTEx, DGIdb = DGIdb)
-	merged$p_val_variant <- as.numeric(merged$p_val_variant)
 	DRAGGER_df <- predict_effect(merged)
 	res <- get_candidates(DRAGGER_df)
 	return(res)
