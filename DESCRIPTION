@@ -1,7 +1,7 @@
-Package: DAGGER
-Title: Drug repositioning by Analysis of GWAS and Gene Expression in R
-Version: 1.1.1
-Authors@R: person("Alvaro", "Esteban-Martos", , "alvaroesteban@uma.com", role = c("aut", "cre"),
+Package: DRAGGER
+Title: Drug Repositioning by Analysis of GWAS and Gene Expression in R
+Version: 1.1.2
+Authors@R: person("Alvaro", "Esteban-Martos", , "alvaroesteban@uma.es", role = c("aut", "cre"),
   comment = c(ORCID = "ORCID: 0000-0001-9791-7779"))
 Description: Tools to perform drug repositioning analysis in R by merging
   gene-variant datasets and searching desired effect in a drug-gene interaction
@@ -21,7 +21,7 @@ Imports:
     plyr
 LazyData: true
 LazyDataCompression: xz
-URL: https://github.com/AEstebanMar/DAGGER
-BugReports: https://github.com/AEstebanMar/DAGGER/issues
+URL: https://github.com/AEstebanMar/DRAGGER
+BugReports: https://github.com/AEstebanMar/DRAGGER/issues
 License: MIT + file LICENSE
 Config/testthat/edition: 3

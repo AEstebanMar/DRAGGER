@@ -1,4 +1,4 @@
-test_that("DAGGER basic pipeline works", {
+test_that("DRAGGER basic pipeline works", {
   test_GWAS <- data.frame(snp = c("rs01", "rs02", "rs03", "rs04"),
                           beta_number = c(1, -1, 1, -1),
                           p_value = rep(2e-7, 4))
@@ -11,7 +11,7 @@ test_that("DAGGER basic pipeline works", {
                            interaction_types = c("activator", "agonist",
                                                  "antagonist", "inhibitor"),
                            gene_symbol = c("gene01", "gene02", "gene03", "gene04"))
-  test_results <- suppressWarnings(DAGGER(test_GWAS, test_GTEx, test_DGIdb))
+  test_results <- suppressWarnings(DRAGGER(test_GWAS, test_GTEx, test_DGIdb))
   expected_results <- data.frame(gene_symbol = c("gene01", "gene02",
                                                  "gene03", "gene04"),
                                  rs_id = c("rs01", "rs02", "rs03", "rs04"),

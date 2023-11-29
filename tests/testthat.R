@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(DAGGER)
+library(DRAGGER)
 
-test_check("DAGGER")
+test_check("DRAGGER")

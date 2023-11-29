@@ -13,59 +13,59 @@ knitr::opts_chunk$set(
 )
 ```
 
-# DAGGER
+# DRAGGER
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/AEstebanMar/DAGGER/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/AEstebanMar/DAGGER/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/AEstebanMar/DRAGGER/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/AEstebanMar/DRAGGER/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-DAGGER provides a toolkit for drug repositioning based on variant and gene-expression data. It includes a wrapper
+DRAGGER provides a toolkit for drug repositioning based on variant and gene-expression data. It includes a wrapper
 for a basic workflow, but a custom run can be set up with ease.
 
 ## Installation
 
-You can install the development version of DAGGER from [GitHub](https://github.com/) with:
+You can install the development version of DRAGGER from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("AEstebanMar/DAGGER")
+devtools::install_github("AEstebanMar/DRAGGER")
 ```
 
 ## Example
 
-DAGGER includes a demo dataset to showcase its main use case.
+DRAGGER includes a demo dataset to showcase its main use case.
 
 ```{r First few lines of demo datasets}
-library(DAGGER)
+library(DRAGGER)
 head(GWAS_demo)
 head(GTEx)
 head(DGIdb)
 ```
 
-DAGGER includes a wrapper function, aptly named DAGGER, which executes the basic workflow.
+DRAGGER includes a wrapper function, aptly named DRAGGER, which executes the basic workflow.
 Workflow is described in detail in vignettes, along with customisation options.
 
-```{r DAGGER_demonstration}
-library(DAGGER)
-demo <- DAGGER(GWAS_demo, GTEx, DGIdb)
+```{r DRAGGER_demonstration}
+library(DRAGGER)
+demo <- DRAGGER(GWAS_demo, GTEx, DGIdb)
 head(demo)
 ```
 
-Here is a preview of the type of plots included in DAGGER, also heavily customisable.
+Here is a preview of the type of plots included in DRAGGER, also heavily customisable.
 
 ```{r Basic_plot_demonstration}
-library(DAGGER)
-demo <- suppressMessages(DAGGER(GWAS_demo, GTEx, DGIdb))
+library(DRAGGER)
+demo <- suppressMessages(DRAGGER(GWAS_demo, GTEx, DGIdb))
 plot_volcano(demo)
 barplot_by_groups(demo, "rs_id", "candidate")
 ```
 A small expasion of base-R chisq test is also included, and can provide insight
-into DAGGER results. The following example compares the number of RS with
+into DRAGGER results. The following example compares the number of RS with
 a valid candidate by tissue, specifically brain vs stomach.
 
 ```{r test_chi2}
-library(DAGGER)
-demo <- suppressMessages(DAGGER(GWAS_demo, GTEx, DGIdb))
+library(DRAGGER)
+demo <- suppressMessages(DRAGGER(GWAS_demo, GTEx, DGIdb))
 test_chi2(demo, "Tissue", "brain", "stomach",
       "candidate", TRUE, FALSE)
 ```

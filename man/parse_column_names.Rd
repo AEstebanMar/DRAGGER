@@ -19,13 +19,13 @@ differently for variant (type "GWAS") and expression (type "GTEx") data.}
 }
 \value{
 Input dataframe with RS ID, gene ID, drug name and p-value
-(if found) renamed to DAGGER standards "rs_id", "gene_id", "drug_name",
+(if found) renamed to DRAGGER standards "rs_id", "gene_id", "drug_name",
 "pvalue". A warning will be given if multiple matches are found for any
 column other than p-value, which returns an error.
 }
 \description{
 \code{parse_column_names} takes an input data frame and renames set columns in
-order to simplify manipulation by other DAGGER functions.
+order to simplify manipulation by other DRAGGER functions.
 }
 \examples{
 parse_column_names(head(GWAS_demo), "GWAS")
