@@ -3,7 +3,7 @@
 #' 
 #' `remove_duplicate_rs` removes rows corresponding to duplicate rs, keeping
 #' the first occurrence. Dataframe is first sorted by p-value if column exists.
-#' @param df A DAGGER-parsed data frame of GWAS information. Must contain an
+#' @param df A DRAGGER-parsed data frame of GWAS information. Must contain an
 #' rs_id column. p_value column optional, but recommended.
 #' @returns A data frame with no duplicate RS. Only the first occurrence of each
 #' duplicate will remain, or the most statistically significant if p-value
@@ -28,7 +28,7 @@ remove_duplicate_rs <- function(df) {
 	}
 	if(is.null(df$rs_id)) {
 		stop('RS ID column not found or not properly parsed. Please run input
-			through DAGGER::parse_column_names()')
+			through DRAGGER::parse_column_names()')
 	}
 
 	if(!any(duplicated(df$rs_id))) {

@@ -1,11 +1,11 @@
 
 #' Predict beneficial drug effect with variant risk and expression effect
 #' 
-#' `predict_effect` compares beta and slope columns in DAGGER dataframe
+#' `predict_effect` compares beta and slope columns in DRAGGER dataframe
 #' (containing variant and gene expression information) and predicts
 #' beneficial drug effect.
-#' @param gene_variant_df a dataframe resulted from merging a DAGGER-parsed
-#' variant-risk dataframe and a DAGGER-parsed gene-variant dataframe.
+#' @param gene_variant_df a dataframe resulted from merging a DRAGGER-parsed
+#' variant-risk dataframe and a DRAGGER-parsed gene-variant dataframe.
 #' @returns Input dataframe with an additional column with the predicted
 #' beneficial drug effect according to beta and slope columns.
 #' @examples
@@ -35,11 +35,11 @@ predict_effect <- function(gene_variant_df) {
 	return(res)
 }
 
-.is.candidate <- function(DAGGER_df, dict) {
-	broad_type <- rep(NULL, nrow(DAGGER_df))
-	broad_type[DAGGER_df$interaction_types %in% dict$activator] <- "activator"
-	broad_type[DAGGER_df$interaction_types %in% dict$inhibitor] <- "inhibitor"
-	candidates <- DAGGER_df$prediction == broad_type
+.is.candidate <- function(DRAGGER_df, dict) {
+	broad_type <- rep(NULL, nrow(DRAGGER_df))
+	broad_type[DRAGGER_df$interaction_types %in% dict$activator] <- "activator"
+	broad_type[DRAGGER_df$interaction_types %in% dict$inhibitor] <- "inhibitor"
+	candidates <- DRAGGER_df$prediction == broad_type
 	return(candidates)
 }
 

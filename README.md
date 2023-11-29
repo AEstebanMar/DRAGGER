@@ -1,33 +1,33 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# DAGGER
+# DRAGGER
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/AEstebanMar/DAGGER/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/AEstebanMar/DAGGER/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/AEstebanMar/DRAGGER/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/AEstebanMar/DRAGGER/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-DAGGER provides a toolkit for drug repositioning based on variant and
+DRAGGER provides a toolkit for drug repositioning based on variant and
 gene-expression data. It includes a wrapper for a basic workflow, but a
 custom run can be set up with ease.
 
 ## Installation
 
-You can install the development version of DAGGER from
+You can install the development version of DRAGGER from
 [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("AEstebanMar/DAGGER")
+devtools::install_github("AEstebanMar/DRAGGER")
 ```
 
 ## Example
 
-DAGGER includes a demo dataset to showcase its main use case.
+DRAGGER includes a demo dataset to showcase its main use case.
 
 ``` r
-library(DAGGER)
+library(DRAGGER)
 head(GWAS_demo)
 #>   variant_id pvalue beta_number
 #> 1  rs2710888  2e-57      0.0115
@@ -75,17 +75,18 @@ head(DGIdb)
 #> 6        PREDNISONE    chembl:CHEMBL635                    0.23  3185288
 ```
 
-DAGGER includes a wrapper function, aptly named DAGGER, which executes
+DRAGGER includes a wrapper function, aptly named DRAGGER, which executes
 the basic workflow. Workflow is described in detail in vignettes, along
 with customisation options.
 
 ``` r
-library(DAGGER)
-demo <- DAGGER(GWAS_demo, GTEx, DGIdb)
+library(DRAGGER)
+demo <- DRAGGER(GWAS_demo, GTEx, DGIdb)
 #> 
 #> 
 #> Parsing variant data
-#> Matching p_value column...
+#> Parsing data frame as GWAS data
+#> Matching p_val_variant column...
 #> Match found. Parsing...
 #> Matching beta_value column...
 #> No matches found
@@ -99,10 +100,9 @@ demo <- DAGGER(GWAS_demo, GTEx, DGIdb)
 #> 
 #> 
 #> Parsing expression data
-#> Matching p_value column...
+#> Parsing data frame as GTEx data
+#> Matching p_val_nominal column...
 #> Match found. Parsing...
-#> Matching beta_value column...
-#> No matches found
 #> Matching rs_id column...
 #> Match found. Parsing...
 #> Matching gene_symbol column...
@@ -112,10 +112,7 @@ demo <- DAGGER(GWAS_demo, GTEx, DGIdb)
 #> 
 #> 
 #> Parsing drug-gene data
-#> Matching p_value column...
-#> No matches found
-#> Matching beta_value column...
-#> No matches found
+#> Parsing data frame as DGIdb data
 #> Matching rs_id column...
 #> No matches found
 #> Matching gene_symbol column...
@@ -157,12 +154,12 @@ head(demo)
 #> 6              Missing                      NA Missing  inhibitor      TRUE
 ```
 
-Here is a preview of the type of plots included in DAGGER, also heavily
+Here is a preview of the type of plots included in DRAGGER, also heavily
 customisable.
 
 ``` r
-library(DAGGER)
-demo <- suppressMessages(DAGGER(GWAS_demo, GTEx, DGIdb))
+library(DRAGGER)
+demo <- suppressMessages(DRAGGER(GWAS_demo, GTEx, DGIdb))
 plot_volcano(demo)
 ```
 
@@ -174,12 +171,12 @@ barplot_by_groups(demo, "rs_id", "candidate")
 
 <img src="man/figures/README-Basic_plot_demonstration-2.png" width="100%" />
 A small expasion of base-R chisq test is also included, and can provide
-insight into DAGGER results. The following example compares the number
+insight into DRAGGER results. The following example compares the number
 of RS with a valid candidate by tissue, specifically brain vs stomach.
 
 ``` r
-library(DAGGER)
-demo <- suppressMessages(DAGGER(GWAS_demo, GTEx, DGIdb))
+library(DRAGGER)
+demo <- suppressMessages(DRAGGER(GWAS_demo, GTEx, DGIdb))
 test_chi2(demo, "Tissue", "brain", "stomach",
       "candidate", TRUE, FALSE)
 #> Warning in chisq.test(chisq_table): Chi-squared approximation may be incorrect

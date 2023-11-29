@@ -14,7 +14,7 @@ plot_volcano(
 )
 }
 \arguments{
-\item{df}{A DAGGER-parsed data frame containing p-value and beta number
+\item{df}{A DRAGGER-parsed data frame containing p-value and beta number
 columns.}
 
 \item{title}{Title of the resulting plot.}
@@ -37,7 +37,7 @@ A volcano plot of the provided distributions.
 }
 \description{
 \code{plot_volcano} plots log2 of variant odds ratio versus log10 of p-value
-for a given DAGGER-parsed data frame of variant data.
+for a given DRAGGER-parsed data frame of variant data.
 }
 \examples{
 GWAS_example <- GWAS_demo

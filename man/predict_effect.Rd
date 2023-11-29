@@ -7,15 +7,15 @@
 predict_effect(gene_variant_df)
 }
 \arguments{
-\item{gene_variant_df}{a dataframe resulted from merging a DAGGER-parsed
-variant-risk dataframe and a DAGGER-parsed gene-variant dataframe.}
+\item{gene_variant_df}{a dataframe resulted from merging a DRAGGER-parsed
+variant-risk dataframe and a DRAGGER-parsed gene-variant dataframe.}
 }
 \value{
 Input dataframe with an additional column with the predicted
 beneficial drug effect according to beta and slope columns.
 }
 \description{
-\code{predict_effect} compares beta and slope columns in DAGGER dataframe
+\code{predict_effect} compares beta and slope columns in DRAGGER dataframe
 (containing variant and gene expression information) and predicts
 beneficial drug effect.
 }

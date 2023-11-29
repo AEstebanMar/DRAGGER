@@ -2,8 +2,8 @@
 #' Volcano plot of variant p-value versus odds ratio
 #' 
 #' `plot_volcano` plots log2 of variant odds ratio versus log10 of p-value
-#' for a given DAGGER-parsed data frame of variant data.
-#' @param df A DAGGER-parsed data frame containing p-value and beta number
+#' for a given DRAGGER-parsed data frame of variant data.
+#' @param df A DRAGGER-parsed data frame containing p-value and beta number
 #' columns.
 #' @param pval_col Name of p-value column. Default is "p_val_variant".
 #' @param title Title of the resulting plot.

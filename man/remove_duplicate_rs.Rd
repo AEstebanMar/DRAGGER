@@ -7,7 +7,7 @@
 remove_duplicate_rs(df)
 }
 \arguments{
-\item{df}{A DAGGER-parsed data frame of GWAS information. Must contain an
+\item{df}{A DRAGGER-parsed data frame of GWAS information. Must contain an
 rs_id column. p_value column optional, but recommended.}
 }
 \value{

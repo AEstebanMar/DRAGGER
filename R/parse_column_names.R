@@ -31,7 +31,7 @@
 #' Parse column names to package standard
 #' 
 #' `parse_column_names` takes an input data frame and renames set columns in
-#' order to simplify manipulation by other DAGGER functions.
+#' order to simplify manipulation by other DRAGGER functions.
 #' @param df A data frame. Must contain at least one of the columns expected
 #' for analysis (RS ID, gene ID, drug name). If multiple columns exist for
 #' any of this information, function will choose the one with most unique names.
@@ -41,7 +41,7 @@
 #' @param type Type of information contained in df. Renames p-value column
 #' differently for variant (type "GWAS") and expression (type "GTEx") data.
 #' @returns Input dataframe with RS ID, gene ID, drug name and p-value
-#' (if found) renamed to DAGGER standards "rs_id", "gene_id", "drug_name",
+#' (if found) renamed to DRAGGER standards "rs_id", "gene_id", "drug_name",
 #' "pvalue". A warning will be given if multiple matches are found for any
 #' column other than p-value, which returns an error.
 #' @examples
